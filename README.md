@@ -1,93 +1,329 @@
 # Iti0302 2024 Project
+(ChatGPT Ideas for implementation (Not ready yet (DO NOT GRADE (thx))))
 
+---
 
+### **Project Title:** **Online Marketplace Application**
 
-## Getting started
+#### **Project Description:**
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Develop a full-stack e-commerce web application where users can browse products, add items to a shopping cart, and proceed to checkout. The platform will support user authentication, product management, order processing, and integration with a payment gateway API. This project will provide a comprehensive experience in building a real-world application using modern technologies and best practices.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+---
 
-## Add your files
+### **Key Features and Requirement Mapping**
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+#### **1. Database Design**
 
-```
-cd existing_repo
-git remote add origin https://gitlab.cs.taltech.ee/datjul/iti0302-2024-project.git
-git branch -M main
-git push -uf origin main
-```
+- **Core Tables:**
+  - **Users:** Stores user credentials and profile information.
+  - **Products:** Contains product details like name, description, price, and stock.
+  - **Orders:** Records purchase orders made by users.
+  - **OrderItems:** Links products to orders, including quantity and price at the time of purchase.
 
-## Integrate with your tools
+- **Additional Tables (Per Teammate):**
+  - **Categories:** Classifies products into various categories.
+  - **Reviews:** Allows users to leave reviews on products.
+  - **ShoppingCart:** Temporarily stores products that users intend to purchase.
+  - **Payments:** Logs payment transactions.
+  - **Wishlists:** Lets users save products for future reference.
 
-- [ ] [Set up project integrations](https://gitlab.cs.taltech.ee/datjul/iti0302-2024-project/-/settings/integrations)
+- **Requirement Fulfillment:**
+  - **Minimum 3 tables + 1 table per teammate:** With the core and additional tables, you satisfy this requirement.
 
-## Collaborate with your team
+#### **2. API Endpoints**
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+- **User Authentication:**
+  - **POST /api/auth/signup:** Register a new user.
+  - **POST /api/auth/login:** Authenticate user and return JWT.
+  - **GET /api/users/profile:** Retrieve user profile details.
+  - **PUT /api/users/profile:** Update user profile.
 
-## Test and Deploy
+- **Product Management:**
+  - **GET /api/products:** List products with search, sorting, and pagination.
+  - **GET /api/products/{id}:** Get product details by ID.
+  - **POST /api/products:** Add a new product (admin only).
+  - **PUT /api/products/{id}:** Update product details (admin only).
+  - **DELETE /api/products/{id}:** Delete a product (admin only).
 
-Use the built-in continuous integration in GitLab.
+- **Shopping Cart:**
+  - **GET /api/cart:** Retrieve current user's shopping cart.
+  - **POST /api/cart:** Add product to cart.
+  - **PUT /api/cart/{itemId}:** Update cart item quantity.
+  - **DELETE /api/cart/{itemId}:** Remove item from cart.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+- **Order Processing:**
+  - **POST /api/orders:** Create a new order.
+  - **GET /api/orders:** List orders for the authenticated user.
+  - **GET /api/orders/{id}:** Get order details.
 
-***
+- **Reviews:**
+  - **POST /api/products/{id}/reviews:** Add a review for a product.
+  - **GET /api/products/{id}/reviews:** Get reviews for a product.
 
-# Editing this README
+- **Integration with Payment API:**
+  - **POST /api/payments:** Process payments via external API (e.g., Stripe).
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- **Requirement Fulfillment:**
+  - **Minimum 10 endpoints + 2 endpoints per teammate:** The above endpoints fulfill this criterion.
 
-## Suggestions for a good README
+#### **3. Frontend Functionality**
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- **Home Page:**
+  - Display featured products and categories.
+- **Product Listing Page:**
+  - Show products with sorting (by price, popularity), search functionality, and pagination.
+- **Product Detail Page:**
+  - Display detailed information, including reviews.
+- **Shopping Cart:**
+  - Allow users to view and manage cart items.
+- **Checkout Process:**
+  - Collect shipping information and process payments.
+- **User Account Pages:**
+  - Profile management, order history, wishlist.
 
-## Name
-Choose a self-explaining name for your project.
+- **Requirement Fulfillment:**
+  - **Table view with sorting, search, and pagination:** Implemented in the product listing page.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+#### **4. Security and Authentication**
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+- **User Authentication:**
+  - Implemented using **Spring Security** and **JWT** tokens.
+- **Role-Based Access Control:**
+  - Differentiate between regular users and admin roles.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+- **Requirement Fulfillment:**
+  - **Login functionality using Spring Security + JWT:** Covered by the authentication endpoints.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+#### **5. External API Integration**
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- **Payment Processing:**
+  - Integrate with **Stripe API** to handle payment transactions securely.
+- **Optional Integration:**
+  - Use a shipping API for order tracking or a product recommendation API.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+- **Requirement Fulfillment:**
+  - **Integration to other API:** Achieved through payment processing.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+#### **6. Documentation**
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+- **OpenAPI Documentation:**
+  - Use **Swagger** or **SpringDoc OpenAPI** to document all APIs.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+- **GitLab Wiki Pages:**
+  - **Database Diagram:** Visual representation of your database schema.
+  - **Project Description:** Overview, objectives, and features.
+  - **Component Diagram:** Show the architecture and components.
+  - **Installation Guide:** Detailed steps to set up the project, including stack and commands.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+- **READMEs:**
+  - Provide clear instructions for both frontend and backend projects.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+- **Requirement Fulfillment:**
+  - **4 wiki pages** and **2 READMEs** as per the requirements.
 
-## License
-For open source projects, say how it is licensed.
+#### **7. Code Quality and Best Practices**
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- **DTOs Usage:**
+  - Use Data Transfer Objects in controllers and frontend, ensuring they are case-specific.
+- **MapStruct:**
+  - Utilize **MapStruct** for mapping between entities and DTOs.
+- **Lombok:**
+  - Employ **Lombok** annotations for getters, setters, and constructors.
+- **SLF4J Logging:**
+  - Implement logging using **SLF4J**.
+- **SonarLint Compliance:**
+  - Ensure no critical warnings are present.
+- **Error Handling:**
+  - Implement global exception handling using `@ControllerAdvice`.
+- **RESTful API Design:**
+  - Follow best practices for URL naming and HTTP methods.
+
+- **Requirement Fulfillment:**
+  - Addresses all coding standards and practices specified.
+
+#### **8. Deployment and CI/CD**
+
+- **GitLab CI/CD Pipelines:**
+  - Set up pipelines for both frontend and backend with automated testing and deployment.
+- **Docker Deployment:**
+  - Containerize the backend using Docker.
+  - Optionally use **docker-compose** for orchestrating multiple containers.
+- **Server Configuration:**
+  - Externalize `application.properties` on the server.
+- **Frontend Accessibility:**
+  - Serve frontend via **Nginx** on port 80 and make it accessible via a hostname.
+
+- **Requirement Fulfillment:**
+  - All server and CI/CD deployment requirements are satisfied.
+
+#### **9. Testing**
+
+- **Unit Tests:**
+  - Write unit tests for the service layer to achieve at least **80% code coverage**.
+- **Testing Tools:**
+  - Use **JUnit** and **Mockito** for testing.
+
+- **Requirement Fulfillment:**
+  - **Unit tests | Code coverage 80% service layer:** Achieved through comprehensive testing.
+
+---
+
+### **Technical Stack**
+
+#### **Backend:**
+
+- **Language:** Java
+- **Framework:** Spring Boot
+- **Database:** MySQL or PostgreSQL
+- **ORM:** Hibernate (via Spring Data JPA)
+- **Security:** Spring Security with JWT
+- **Mapping:** MapStruct
+- **Logging:** SLF4J with Logback
+- **Testing:** JUnit, Mockito
+- **Build Tool:** Maven or Gradle
+
+#### **Frontend:**
+
+- **Framework:** React, Angular, or Vue.js (choose based on team preference)
+- **State Management:** Redux (for React), NgRx (for Angular), or Vuex (for Vue.js)
+- **Routing:** React Router, Angular Router, or Vue Router
+- **HTTP Client:** Axios or Fetch API
+- **UI Library:** Material-UI, Bootstrap, or Ant Design
+
+#### **CI/CD and Deployment:**
+
+- **CI/CD:** GitLab CI/CD
+- **Containerization:** Docker
+- **Web Server:** Nginx
+- **Hosting:** A server accessible to your team (could be AWS, DigitalOcean, etc.)
+
+---
+
+### **Implementation Plan**
+
+#### **1. Project Setup**
+
+- **Initialize Repositories:**
+  - Set up separate GitLab repositories for frontend and backend.
+- **Configure CI/CD Pipelines:**
+  - Create `.gitlab-ci.yml` files for both projects.
+- **Set Up Docker:**
+  - Write `Dockerfile` for the backend.
+  - Optionally create `docker-compose.yml` if using multiple services.
+
+#### **2. Backend Development**
+
+- **Authentication Module:**
+  - Implement user registration and login with JWT.
+- **Product Module:**
+  - Develop CRUD operations for products.
+- **Cart and Order Modules:**
+  - Implement shopping cart functionality.
+  - Handle order creation and processing.
+- **Payment Integration:**
+  - Integrate with Stripe API for payment processing.
+- **Review Module:**
+  - Allow users to add and view product reviews.
+- **Exception Handling:**
+  - Implement global exception handling.
+
+#### **3. Frontend Development**
+
+- **User Interface:**
+  - Design UI components for all pages.
+- **State Management:**
+  - Manage application state using the chosen state management library.
+- **API Integration:**
+  - Connect frontend to backend APIs.
+- **Routing:**
+  - Set up client-side routing for navigation.
+- **Authentication Flow:**
+  - Implement login and signup forms.
+  - Secure routes that require authentication.
+
+#### **4. Testing**
+
+- **Backend Testing:**
+  - Write unit tests for services and controllers.
+- **Frontend Testing:**
+  - Write tests for components and utilities (optional but recommended).
+- **Code Coverage:**
+  - Use tools like **JaCoCo** for backend and **Jest** for frontend to measure coverage.
+
+#### **5. Documentation**
+
+- **API Documentation:**
+  - Annotate backend code with Swagger/OpenAPI annotations.
+- **Wiki Pages:**
+  - Collaborate to create the required wiki pages.
+- **READMEs:**
+  - Provide clear setup and usage instructions.
+
+#### **6. Deployment**
+
+- **Backend Deployment:**
+  - Deploy Docker container on the server.
+- **Frontend Deployment:**
+  - Build the frontend and serve it via Nginx.
+- **Environment Configuration:**
+  - Use external `application.properties` and environment variables for sensitive data.
+
+#### **7. Team Collaboration**
+
+- **Task Allocation:**
+  - Distribute tasks according to team members' strengths.
+- **Regular Meetings:**
+  - Schedule stand-ups or weekly meetings to track progress.
+- **Code Reviews:**
+  - Implement a peer-review process before merging code.
+
+---
+
+### **Additional Features (Optional)**
+
+- **Email Notifications:**
+  - Send order confirmation emails using services like SendGrid.
+- **Admin Dashboard:**
+  - Create an interface for admins to manage products and orders.
+- **Inventory Management:**
+  - Implement stock level checks and notifications for low stock.
+- **Search Engine Optimization (SEO):**
+  - Optimize frontend for better search engine ranking.
+- **Analytics:**
+  - Integrate Google Analytics to track user behavior.
+
+---
+
+### **Potential Challenges and Solutions**
+
+- **Concurrency Issues:**
+  - **Challenge:** Handling simultaneous updates to product stock.
+  - **Solution:** Use database transactions and locking mechanisms.
+- **Security Risks:**
+  - **Challenge:** Protecting sensitive user data.
+  - **Solution:** Implement strong encryption, validate inputs, and follow security best practices.
+- **Payment Compliance:**
+  - **Challenge:** Meeting PCI DSS compliance.
+  - **Solution:** Use trusted payment gateways that handle sensitive data.
+
+---
+
+### **Final Checklist**
+
+- **All Required Features Implemented**
+- **Documentation Complete**
+- **CI/CD Pipelines Functional**
+- **Code Meets Quality Standards**
+- **Application Deployed and Accessible**
+- **Team Contributions Evident**
+
+---
+
+### **Conclusion**
+
+By choosing to develop an e-commerce application, you can effectively meet all the project requirements while working on a practical and widely applicable project. This will not only fulfill your assignment criteria but also provide a valuable addition to your professional portfolio.
+
+---
+
+If you need further assistance with specific aspects of the project, such as setting up CI/CD pipelines, integrating the payment API, or any other component, feel free to ask!
