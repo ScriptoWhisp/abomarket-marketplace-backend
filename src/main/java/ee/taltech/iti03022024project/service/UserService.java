@@ -28,8 +28,8 @@ public class UserService {
 
     public Optional<UserDto> createUser(UserDto userDto) {
         UserEntity newUser = userMapper.toEntity(userDto);
-        usersRepository.save(newUser);
-        return Optional.of(userMapper.toDto(newUser));
+        UserEntity savedUser = usersRepository.save(newUser);
+        return Optional.of(userMapper.toDto(savedUser));
     }
 
     public Optional<UserDto> updateUser(int id, UserDto userDto) {
@@ -37,6 +37,9 @@ public class UserService {
         userToUpdate.ifPresent(user -> {
             user.setFirst_name(userDto.getFirstName() != null ? userDto.getFirstName() : user.getFirst_name());
             user.setLast_name(userDto.getLastName() != null ? userDto.getLastName() : user.getLast_name());
+            user.setEmail(userDto.getEmail() != null ? userDto.getEmail() : user.getEmail());
+            user.setPassword(userDto.getPassword() != null ? userDto.getPassword() : user.getPassword());
+            user.setPhone(userDto.getPhone() != null ? userDto.getPhone() : user.getPhone());
             user.setLocation(userDto.getLocation() != null ? userDto.getLocation() : user.getLocation());
             usersRepository.save(user);
         });
