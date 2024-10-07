@@ -15,12 +15,12 @@ public interface UserMapper {
     @Mapping(source = "user_id", target = "id")
     @Mapping(source = "first_name", target = "firstName")
     @Mapping(source = "last_name", target = "lastName")
-    UserDto toDto(UserEntity bookEntity);
+    UserDto toDto(UserEntity userEntity);
 
 
     @Mapping(source = "id", target = "user_id", ignore = true)
     @Mapping(source = "firstName", target = "first_name")
     @Mapping(source = "lastName", target = "last_name")
-    UserEntity toEntity(UserDto bookDto);
+    UserEntity toEntity(UserDto userDto);
 
 }
