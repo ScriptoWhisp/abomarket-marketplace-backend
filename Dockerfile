@@ -8,7 +8,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 WORKDIR /app
 
 # Copy the jar file
-COPY build/libs/iti0302-lessons-0.0.1-SNAPSHOT.jar app.jar
+COPY build/libs/iti0302-2024-backend-0.0.1-SNAPSHOT.jar app.jar
 
 # Set ownership of the jar file
 RUN chown appuser:appgroup app.jar
