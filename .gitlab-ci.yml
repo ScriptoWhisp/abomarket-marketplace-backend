@@ -45,4 +45,4 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd /home/ubuntu && docker-compose pull && docker-compose up -d --force-recreate --remove-orphans"
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd /home/ubuntu && docker-compose down && docker-compose pull && docker-compose up -d --remove-orphans"
