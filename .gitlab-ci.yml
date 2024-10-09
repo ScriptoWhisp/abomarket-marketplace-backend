@@ -5,7 +5,7 @@ stages:
 
 variables:
   DOCKER_REGISTRY: docker.io
-  DOCKER_IMAGE: supax/iti0302
+  DOCKER_IMAGE: scriptowhisp/crossover3
 
 build:
   stage: build
