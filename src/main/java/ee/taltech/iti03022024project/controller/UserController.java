@@ -48,9 +48,4 @@ public class UserController {
         return userService.deleteUser(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
-
 }
