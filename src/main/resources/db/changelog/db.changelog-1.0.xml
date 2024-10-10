@@ -22,4 +22,28 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="2024-10-10 Add Products Table" author="Viktor Dovbnia">
+        <createTable tableName="products">
+            <column name="product_id" type="integer" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="text"/>
+            <column name="description" type="text"/>
+            <column name="price" type="double"/>
+            <column name="quantity_in_stock" type="int"/>
+            <column name="seller_id" type="int"/>
+            <column name="category_id" type="int"/>
+            <column name="date_added" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="products"
+                                 baseColumnNames="seller_id"
+                                 constraintName="seller_id_to_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
