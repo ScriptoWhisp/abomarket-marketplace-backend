@@ -33,13 +33,13 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto userDto) {
-        return productService.createProduct(userDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
+        return productService.createProduct(productDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto userDto) {
-        return productService.updateProduct(id, userDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto) {
+        return productService.updateProduct(id, productDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
