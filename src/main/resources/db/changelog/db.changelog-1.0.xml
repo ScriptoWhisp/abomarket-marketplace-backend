@@ -83,4 +83,47 @@
         />
     </changeSet>
 
+    <changeSet id="2024-10-10 Add Categories table" author="Alexander Smirnov">
+        <createTable tableName="categories">
+            <column name="category_id" type="integer" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="category_name" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2024-10-10 Add Order_items table" author="Alexander Smirnov">
+        <createTable tableName="order_items">
+            <column name="order_item_id" type="integer" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_at_time_of_order" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="order_items"
+                                 baseColumnNames="order_id"
+                                 constraintName="order_id_to_orders"
+                                 referencedTableName="orders"
+                                 referencedColumnNames="order_id"
+        />
+
+        <addForeignKeyConstraint baseTableName="order_items"
+                                 baseColumnNames="product_id"
+                                 constraintName="product_id_to_products"
+                                 referencedTableName="products"
+                                 referencedColumnNames="product_id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
