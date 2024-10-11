@@ -35,7 +35,7 @@ public class CategoryService {
     public Optional<CategoryDto> updateCategory(int id, CategoryDto categoryDto) {
         Optional<CategoryEntity> categoryToUpdate = categoryRepository.findById(id);
         categoryToUpdate.ifPresent(category -> {
-            category.setCategory_name(categoryDto.getName() != null ? categoryDto.getName() : category.getCategory_name());
+            category.setCategoryName(categoryDto.getName() != null ? categoryDto.getName() : category.getCategoryName());
             categoryRepository.save(category);
         });
         return categoryToUpdate.map(categoryMapper::toDto);

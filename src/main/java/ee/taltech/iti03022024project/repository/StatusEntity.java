@@ -1,5 +1,6 @@
 package ee.taltech.iti03022024project.repository;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +13,7 @@ public class StatusEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int status_id;
-    private String status_name;
+    @Column(name = "status_id")
+    private int statusId;
+    private String statusName;
 }
