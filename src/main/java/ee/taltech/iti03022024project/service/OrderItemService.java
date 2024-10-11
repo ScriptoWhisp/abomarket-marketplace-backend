@@ -4,6 +4,7 @@ import ee.taltech.iti03022024project.controller.OrderItemDto;
 import ee.taltech.iti03022024project.mapstruct.OrderItemMapper;
 import ee.taltech.iti03022024project.repository.OrderItemEntity;
 import ee.taltech.iti03022024project.repository.OrderItemRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class OrderItemService {
 

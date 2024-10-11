@@ -6,6 +6,7 @@ import ee.taltech.iti03022024project.mapstruct.ProductMapper;
 import ee.taltech.iti03022024project.repository.CategoryEntity;
 import ee.taltech.iti03022024project.repository.CategoryRepository;
 import ee.taltech.iti03022024project.repository.ProductEntity;
+import jakarta.transaction.Transactional;
 import ee.taltech.iti03022024project.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProductService {
 

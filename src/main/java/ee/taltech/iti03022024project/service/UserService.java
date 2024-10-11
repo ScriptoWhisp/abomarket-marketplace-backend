@@ -5,6 +5,7 @@ import ee.taltech.iti03022024project.controller.UserDto;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
 import ee.taltech.iti03022024project.repository.UserEntity;
 import ee.taltech.iti03022024project.repository.UsersRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 

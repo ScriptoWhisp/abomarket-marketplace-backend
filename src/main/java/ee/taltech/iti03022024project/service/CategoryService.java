@@ -4,6 +4,7 @@ import ee.taltech.iti03022024project.controller.CategoryDto;
 import ee.taltech.iti03022024project.mapstruct.CategoryMapper;
 import ee.taltech.iti03022024project.repository.CategoryEntity;
 import ee.taltech.iti03022024project.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-
 
     public List<CategoryDto> getCategories() {
         return categoryRepository.findAll().stream().map(categoryMapper::toDto).toList();
