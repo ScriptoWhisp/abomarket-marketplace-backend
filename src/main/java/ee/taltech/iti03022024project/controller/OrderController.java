@@ -37,9 +37,9 @@ public class OrderController {
         return orderService.createOrder(orderDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
     }
 
-    @PutMapping("/{id}/status/{statusId}")
-    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable int id, @PathVariable int statusId) {
-        return orderService.updateOrderStatus(id, statusId).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable int id, @RequestBody OrderDto orderDto) {
+        return orderService.updateOrder(id, orderDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

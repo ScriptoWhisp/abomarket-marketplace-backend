@@ -3,8 +3,10 @@ package ee.taltech.iti03022024project.service;
 
 import ee.taltech.iti03022024project.controller.ProductDto;
 import ee.taltech.iti03022024project.mapstruct.ProductMapper;
-import ee.taltech.iti03022024project.repository.ProductRepository;
+import ee.taltech.iti03022024project.repository.CategoryEntity;
+import ee.taltech.iti03022024project.repository.CategoryRepository;
 import ee.taltech.iti03022024project.repository.ProductEntity;
+import ee.taltech.iti03022024project.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
 
     public List<ProductDto> getProducts() {
@@ -38,10 +41,16 @@ public class ProductService {
             product.setName(productDto.getName() != null ? productDto.getName() : product.getName());
             product.setDescription(productDto.getDescription() != null ? productDto.getDescription() : product.getDescription());
             product.setPrice(productDto.getPrice() != null ? productDto.getPrice() : product.getPrice());
-            product.setQuantity_in_stock(productDto.getStockQuantity() != null ? productDto.getStockQuantity() : product.getQuantity_in_stock());
+            product.setQuantityInStock(productDto.getStockQuantity() != null ? productDto.getStockQuantity() : product.getQuantityInStock());
             // skipping setting seller because why would you need to do that
             // also it's a bit harder to implement
-            product.setCategory_id(productDto.getCategoryId() != null ? productDto.getCategoryId() : product.getCategory_id());
+
+            Optional<CategoryEntity> newCategoryOpt = categoryRepository.findById(productDto.getCategoryId());
+            if (newCategoryOpt.isPresent()) {
+                product.setCategory(productDto.getCategoryId() != null ? newCategoryOpt.get() : product.getCategory());
+            }
+
+
             productRepository.save(product);
         });
         return productToUpdate.map(productMapper::toDto);

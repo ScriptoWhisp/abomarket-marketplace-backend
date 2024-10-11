@@ -36,7 +36,7 @@ public class StatusService {
     public Optional<StatusDto> updateStatus(int id, StatusDto statusDto) {
         Optional<StatusEntity> statusToUpdate = statusRepository.findById(id);
         statusToUpdate.ifPresent(status -> {
-            status.setStatus_name(statusDto.getName() != null ? statusDto.getName() : status.getStatus_name());
+            status.setStatusName(statusDto.getName() != null ? statusDto.getName() : status.getStatusName());
             statusRepository.save(status);
         });
         return statusToUpdate.map(statusMapper::toDto);
