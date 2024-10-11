@@ -90,6 +90,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
     volumes:
       - /path/to/application.properties:/app/application.properties
+      
 ```
 
 And then execute the following command to run database and application in a container:
