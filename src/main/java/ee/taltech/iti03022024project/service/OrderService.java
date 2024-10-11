@@ -37,18 +37,14 @@ public class OrderService {
         return Optional.of(orderMapper.toDto(savedOrder));
     }
 
-    public Optional<OrderDto> updateOrderStatus(int id, int statusId) {
+    public Optional<OrderDto> updateOrder(int id, OrderDto orderDto) {
         Optional<OrderEntity> orderToUpdate = orderRepository.findById(id);
-        Optional<StatusEntity> statusToUpdate = statusRepository.findById(statusId);
-
-        if (orderToUpdate.isPresent() && statusToUpdate.isPresent()) {
-            OrderEntity order = orderToUpdate.get();
-            StatusEntity status = statusToUpdate.get();
-            order.setStatus(status);
+        orderToUpdate.ifPresent(order -> {
+            Optional<StatusEntity> newStatusOpt = statusRepository.findById(orderDto.getStatusId());
+            newStatusOpt.ifPresent(order::setStatus);
             orderRepository.save(order);
-            return Optional.of(orderMapper.toDto(order));
-        }
-        return Optional.empty();
+        });
+        return orderToUpdate.map(orderMapper::toDto);
     }
 
     public Optional<Object> deleteOrder(int id) {

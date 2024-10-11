@@ -1,44 +1,53 @@
 package ee.taltech.iti03022024project.mapstruct;
 
 import ee.taltech.iti03022024project.controller.ProductDto;
-import ee.taltech.iti03022024project.controller.UserDto;
+import ee.taltech.iti03022024project.repository.CategoryEntity;
 import ee.taltech.iti03022024project.repository.ProductEntity;
 import ee.taltech.iti03022024project.repository.UserEntity;
-import jakarta.persistence.Id;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
     // first name and last name are combined into name
-    @Mapping(source = "product_id", target = "id")
-    @Mapping(source = "quantity_in_stock", target = "stockQuantity")
-    @Mapping(source = "seller.user_id", target = "sellerId")
-    @Mapping(source = "category_id", target = "categoryId")
-    @Mapping(source = "date_added", target = "dateAdded")
+    @Mapping(source = "productId", target = "id")
+    @Mapping(source = "quantityInStock", target = "stockQuantity")
+    @Mapping(source = "seller.userId", target = "sellerId")
+    @Mapping(source = "category.categoryId", target = "categoryId")
+    @Mapping(source = "dateAdded", target = "dateAdded")
     ProductDto toDto(ProductEntity productEntity);
 
 
-    @Mapping(source = "id", target = "product_id", ignore = true)
-    @Mapping(source = "stockQuantity", target = "quantity_in_stock")
+    @Mapping(source = "id", target = "productId", ignore = true)
+    @Mapping(source = "stockQuantity", target = "quantityInStock")
     @Mapping(source = "sellerId", target = "seller")
-    @Mapping(source = "categoryId", target = "category_id")
-    @Mapping(source = "dateAdded", target = "date_added", ignore = true)
+    @Mapping(source = "categoryId", target = "category")
+    @Mapping(source = "dateAdded", target = "dateAdded", ignore = true)
     ProductEntity toEntity(ProductDto productDto);
 
 
     // Helper method to map sellerId to UserEntity when converting DTO to entity
     default UserEntity mapSellerIdToUserEntity(int sellerId) {
         UserEntity userEntity = new UserEntity();
-        userEntity.setUser_id(sellerId);
+        userEntity.setUserId(sellerId);
         return userEntity;
     }
 
     // Helper method to map UserEntity to sellerId when converting entity to DTO
     default int mapUserEntityToSellerId(UserEntity seller) {
-        return seller.getUser_id();
+        return seller.getUserId();
+    }
+
+    // Helper method to map categoryId to CategoryEntity when converting DTO to entity
+    default CategoryEntity mapCategoryIdToCategoryEntity(int categoryId) {
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setCategoryId(categoryId);
+        return categoryEntity;
+    }
+
+    // Helper method to map CategoryEntity to categoryId when converting entity to DTO
+    default int mapCategoryEntityToCategoryId(CategoryEntity category) {
+        return category.getCategoryId();
     }
 }

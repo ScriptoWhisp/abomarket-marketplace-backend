@@ -8,12 +8,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface StatusMapper {
 
-    @Mapping(source = "status_id", target = "id")
-    @Mapping(source = "status_name", target = "name")
+    @Mapping(source = "statusId", target = "id")
+    @Mapping(source = "statusName", target = "name")
     StatusDto toDto(StatusEntity statusEntity);
 
-    @Mapping(source = "id", target = "status_id", ignore = true)
-    @Mapping(source = "name", target = "status_name")
+    @Mapping(source = "id", target = "statusId", ignore = true)
+    @Mapping(source = "name", target = "statusName")
     StatusEntity toEntity(StatusDto statusDto);
 
 }
