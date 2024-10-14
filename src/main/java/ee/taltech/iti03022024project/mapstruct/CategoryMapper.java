@@ -1,7 +1,7 @@
 package ee.taltech.iti03022024project.mapstruct;
 
-import ee.taltech.iti03022024project.controller.CategoryDto;
-import ee.taltech.iti03022024project.repository.CategoryEntity;
+import ee.taltech.iti03022024project.dto.CategoryDto;
+import ee.taltech.iti03022024project.domain.CategoryEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

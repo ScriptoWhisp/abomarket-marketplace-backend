@@ -1,10 +1,10 @@
 package ee.taltech.iti03022024project.service;
 
-import ee.taltech.iti03022024project.controller.OrderDto;
+import ee.taltech.iti03022024project.dto.OrderDto;
 import ee.taltech.iti03022024project.mapstruct.OrderMapper;
-import ee.taltech.iti03022024project.repository.OrderEntity;
+import ee.taltech.iti03022024project.domain.OrderEntity;
 import ee.taltech.iti03022024project.repository.OrderRepository;
-import ee.taltech.iti03022024project.repository.StatusEntity;
+import ee.taltech.iti03022024project.domain.StatusEntity;
 import ee.taltech.iti03022024project.repository.StatusRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package ee.taltech.iti03022024project.service;
 
-import ee.taltech.iti03022024project.controller.CategoryDto;
+import ee.taltech.iti03022024project.dto.CategoryDto;
 import ee.taltech.iti03022024project.mapstruct.CategoryMapper;
-import ee.taltech.iti03022024project.repository.CategoryEntity;
+import ee.taltech.iti03022024project.domain.CategoryEntity;
 import ee.taltech.iti03022024project.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

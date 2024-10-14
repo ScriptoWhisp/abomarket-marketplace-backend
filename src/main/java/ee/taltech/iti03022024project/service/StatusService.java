@@ -1,9 +1,9 @@
 package ee.taltech.iti03022024project.service;
 
 
-import ee.taltech.iti03022024project.controller.StatusDto;
+import ee.taltech.iti03022024project.dto.StatusDto;
 import ee.taltech.iti03022024project.mapstruct.StatusMapper;
-import ee.taltech.iti03022024project.repository.StatusEntity;
+import ee.taltech.iti03022024project.domain.StatusEntity;
 import ee.taltech.iti03022024project.repository.StatusRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

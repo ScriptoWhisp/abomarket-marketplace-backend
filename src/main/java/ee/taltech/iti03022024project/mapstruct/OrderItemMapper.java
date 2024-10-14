@@ -1,9 +1,9 @@
 package ee.taltech.iti03022024project.mapstruct;
 
-import ee.taltech.iti03022024project.controller.OrderItemDto;
-import ee.taltech.iti03022024project.repository.OrderEntity;
-import ee.taltech.iti03022024project.repository.OrderItemEntity;
-import ee.taltech.iti03022024project.repository.ProductEntity;
+import ee.taltech.iti03022024project.dto.OrderItemDto;
+import ee.taltech.iti03022024project.domain.OrderEntity;
+import ee.taltech.iti03022024project.domain.OrderItemEntity;
+import ee.taltech.iti03022024project.domain.ProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

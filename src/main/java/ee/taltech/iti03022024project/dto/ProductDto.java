@@ -1,9 +1,9 @@
-package ee.taltech.iti03022024project.controller;
+package ee.taltech.iti03022024project.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +16,6 @@ public class ProductDto {
     private Integer stockQuantity;
     private Integer sellerId;
     private Integer categoryId;
-    private OffsetDateTime dateAdded;
+    private Instant dateAdded;
 
 }

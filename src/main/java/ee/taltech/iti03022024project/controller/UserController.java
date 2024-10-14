@@ -1,5 +1,6 @@
 package ee.taltech.iti03022024project.controller;
 
+import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,6 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        System.out.println(id);
         return userService.deleteUser(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 

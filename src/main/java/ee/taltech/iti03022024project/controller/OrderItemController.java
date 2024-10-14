@@ -1,5 +1,6 @@
 package ee.taltech.iti03022024project.controller;
 
+import ee.taltech.iti03022024project.dto.OrderItemDto;
 import ee.taltech.iti03022024project.service.OrderItemService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

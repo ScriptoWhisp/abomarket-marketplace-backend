@@ -1,4 +1,4 @@
-package ee.taltech.iti03022024project.repository;
+package ee.taltech.iti03022024project.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,12 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "products")
 public class ProductEntity {
 
@@ -32,9 +34,8 @@ public class ProductEntity {
     @JoinColumn(name="category_id", referencedColumnName = "category_id")
     private CategoryEntity category;
 
-    // still unsure whether to use LDT or ODT
     @CreationTimestamp
-    private OffsetDateTime dateAdded;
+    private Instant dateAdded;
 
 
 }
