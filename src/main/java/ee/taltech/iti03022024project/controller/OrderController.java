@@ -4,14 +4,7 @@ import ee.taltech.iti03022024project.dto.OrderDto;
 import ee.taltech.iti03022024project.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +31,7 @@ public class OrderController {
         return orderService.createOrder(orderDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable int id, @RequestBody OrderDto orderDto) {
         return orderService.updateOrder(id, orderDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
