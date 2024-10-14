@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -34,7 +35,7 @@ public class UserEntity {
     private OrderEntity unfinishedOrder;
 
     @CreationTimestamp
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
 
 
 }
