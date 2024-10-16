@@ -1,4 +1,4 @@
-package ee.taltech.iti03022024project.controller;
+package ee.taltech.iti03022024project.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +14,6 @@ public class UserDto {
     private String password;
     private String phone;
     private String location;
+    private Integer unfinishedOrderId;
 
 }

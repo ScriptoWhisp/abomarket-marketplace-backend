@@ -1,10 +1,11 @@
 package ee.taltech.iti03022024project.service;
 
 
-import ee.taltech.iti03022024project.controller.UserDto;
+import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
-import ee.taltech.iti03022024project.repository.UserEntity;
+import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.repository.UsersRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
@@ -35,8 +37,8 @@ public class UserService {
     public Optional<UserDto> updateUser(int id, UserDto userDto) {
         Optional<UserEntity> userToUpdate = usersRepository.findById(id);
         userToUpdate.ifPresent(user -> {
-            user.setFirst_name(userDto.getFirstName() != null ? userDto.getFirstName() : user.getFirst_name());
-            user.setLast_name(userDto.getLastName() != null ? userDto.getLastName() : user.getLast_name());
+            user.setFirstName(userDto.getFirstName() != null ? userDto.getFirstName() : user.getFirstName());
+            user.setLastName(userDto.getLastName() != null ? userDto.getLastName() : user.getLastName());
             user.setEmail(userDto.getEmail() != null ? userDto.getEmail() : user.getEmail());
             user.setPassword(userDto.getPassword() != null ? userDto.getPassword() : user.getPassword());
             user.setPhone(userDto.getPhone() != null ? userDto.getPhone() : user.getPhone());
