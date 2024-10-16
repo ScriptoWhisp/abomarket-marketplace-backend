@@ -1,9 +1,9 @@
 package ee.taltech.iti03022024project.mapstruct;
 
-import ee.taltech.iti03022024project.controller.ProductDto;
-import ee.taltech.iti03022024project.repository.CategoryEntity;
-import ee.taltech.iti03022024project.repository.ProductEntity;
-import ee.taltech.iti03022024project.repository.UserEntity;
+import ee.taltech.iti03022024project.dto.ProductDto;
+import ee.taltech.iti03022024project.domain.CategoryEntity;
+import ee.taltech.iti03022024project.domain.ProductEntity;
+import ee.taltech.iti03022024project.domain.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

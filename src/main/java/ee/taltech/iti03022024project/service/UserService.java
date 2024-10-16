@@ -1,9 +1,9 @@
 package ee.taltech.iti03022024project.service;
 
 
-import ee.taltech.iti03022024project.controller.UserDto;
+import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
-import ee.taltech.iti03022024project.repository.UserEntity;
+import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.repository.UsersRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package ee.taltech.iti03022024project.controller;
+package ee.taltech.iti03022024project.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

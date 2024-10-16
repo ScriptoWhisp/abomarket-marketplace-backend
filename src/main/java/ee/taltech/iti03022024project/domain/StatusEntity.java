@@ -1,13 +1,15 @@
-package ee.taltech.iti03022024project.repository;
+package ee.taltech.iti03022024project.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "statuses")
 public class StatusEntity {
 

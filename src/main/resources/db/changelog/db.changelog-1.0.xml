@@ -126,7 +126,7 @@
         />
     </changeSet>
 
-    <changeSet id="2024-11-10 Add fields to Users and Products" author="Daniel Tjulinov">
+    <changeSet id="2024-10-11 Add fields to Users and Products" author="Daniel Tjulinov">
         <addColumn tableName="users">
             <column name="unfinished_order" type="int"/>
         </addColumn>
@@ -148,7 +148,7 @@
 
     </changeSet>
 
-    <changeSet id="2024-11-10 Add not null constraints" author="Daniel Tjulinov">
+    <changeSet id="2024-10-11 Add not null constraints" author="Daniel Tjulinov">
 
         <addNotNullConstraint tableName="users" columnName="email"/>
         <addNotNullConstraint tableName="users" columnName="password"/>

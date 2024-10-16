@@ -1,8 +1,8 @@
 package ee.taltech.iti03022024project.service;
 
-import ee.taltech.iti03022024project.controller.OrderItemDto;
+import ee.taltech.iti03022024project.dto.OrderItemDto;
 import ee.taltech.iti03022024project.mapstruct.OrderItemMapper;
-import ee.taltech.iti03022024project.repository.OrderItemEntity;
+import ee.taltech.iti03022024project.domain.OrderItemEntity;
 import ee.taltech.iti03022024project.repository.OrderItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
