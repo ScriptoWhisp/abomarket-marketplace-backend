@@ -3,11 +3,9 @@ package ee.taltech.iti03022024project.controller;
 import ee.taltech.iti03022024project.dto.ProductDto;
 import ee.taltech.iti03022024project.service.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 
 @AllArgsConstructor
 @RestController
@@ -17,8 +15,10 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<ProductDto> getProducts() {
-        return productService.getProducts();
+    public ResponseEntity<Page<ProductDto>> getProducts(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "5") int pageSize) {
+        return ResponseEntity.ok(productService.getProducts(pageNo, pageSize));
     }
 
     @GetMapping("/{id}")
