@@ -7,6 +7,7 @@ import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.repository.UsersRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class UserService {
 
     private final UsersRepository usersRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserDto> getUsers() {
         return usersRepository.findAll().stream().map(userMapper::toDto).toList();
@@ -30,6 +32,7 @@ public class UserService {
 
     public Optional<UserDto> createUser(UserDto userDto) {
         UserEntity newUser = userMapper.toEntity(userDto);
+        newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity savedUser = usersRepository.save(newUser);
         return Optional.of(userMapper.toDto(savedUser));
     }
