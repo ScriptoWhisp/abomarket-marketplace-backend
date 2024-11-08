@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/products")
@@ -24,6 +26,13 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable int id) {
         return productService.getProductById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Page<ProductDto>> getProductsByUserId(@PathVariable int id,
+                                                                @RequestParam(defaultValue = "0") int pageNo,
+                                                               @RequestParam(defaultValue = "5") int pageSize) {
+        return ResponseEntity.ok(productService.getProductsByUserId(id, pageNo, pageSize));
     }
 
     @PostMapping

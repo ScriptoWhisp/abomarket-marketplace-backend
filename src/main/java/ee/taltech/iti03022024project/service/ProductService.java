@@ -34,6 +34,11 @@ public class ProductService {
         return productRepository.findById(id).map(productMapper::toDto);
     }
 
+    public Page<ProductDto> getProductsByUserId(int id, int pageNo, int pageSize) {
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        return productRepository.findAllBySeller_UserId(id, paging).map(productMapper::toDto);
+    }
+
     public Optional<ProductDto> createProduct(ProductDto productDto) {
         ProductEntity newProduct = productMapper.toEntity(productDto);
         ProductEntity savedProduct = productRepository.save(newProduct);
