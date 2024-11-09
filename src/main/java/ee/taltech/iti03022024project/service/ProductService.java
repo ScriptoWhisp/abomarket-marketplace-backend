@@ -60,6 +60,7 @@ public class ProductService {
                 product.setCategory(productDto.getCategoryId() != null ? newCategoryOpt.get() : product.getCategory());
             }
 
+            product.setImageUrl(productDto.getImageUrl() != null ? productDto.getImageUrl() : product.getImageUrl());
 
             productRepository.save(product);
         });
