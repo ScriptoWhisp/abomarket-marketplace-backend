@@ -47,7 +47,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     }
 
-    private Claims parseToken(String token) {
+    public Claims parseToken(String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
