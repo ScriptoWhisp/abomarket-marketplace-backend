@@ -161,4 +161,12 @@
 
     </changeSet>
 
+    <changeSet id="2024-11-09 create column for product images" author="Viktor Dovbnia">
+        <addColumn tableName="products">
+            <column name="image_url" type="text">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

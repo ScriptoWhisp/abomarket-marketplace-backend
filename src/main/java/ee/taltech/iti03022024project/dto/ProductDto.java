@@ -17,5 +17,6 @@ public class ProductDto {
     private Integer sellerId;
     private Integer categoryId;
     private Instant dateAdded;
+    private String imageUrl;
 
 }

@@ -72,4 +72,9 @@ public class SecurityConfiguration {
         return provider;
     }
 
+    @Bean
+    public JwtRequestFilter jwtRequestFilter() {
+        return new JwtRequestFilter(key());
+    }
+
 }
