@@ -63,6 +63,9 @@ public class ProductController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
+        // reminder to myself: change forbidding so it checks the CURRENT product seller id as well
+
+
         if (token == null || token.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
