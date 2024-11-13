@@ -16,6 +16,7 @@ public interface ProductMapper {
     @Mapping(source = "seller.userId", target = "sellerId")
     @Mapping(source = "category.categoryId", target = "categoryId")
     @Mapping(source = "dateAdded", target = "dateAdded")
+    @Mapping(source = "imageUrl", target = "imageUrl")
     ProductDto toDto(ProductEntity productEntity);
 
 
@@ -24,6 +25,7 @@ public interface ProductMapper {
     @Mapping(source = "sellerId", target = "seller")
     @Mapping(source = "categoryId", target = "category")
     @Mapping(source = "dateAdded", target = "dateAdded", ignore = true)
+    @Mapping(source = "imageUrl", target = "imageUrl")
     ProductEntity toEntity(ProductDto productDto);
 
 

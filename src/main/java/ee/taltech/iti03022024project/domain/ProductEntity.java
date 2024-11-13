@@ -37,5 +37,7 @@ public class ProductEntity {
     @CreationTimestamp
     private Instant dateAdded;
 
+    private String imageUrl;
+
 
 }
