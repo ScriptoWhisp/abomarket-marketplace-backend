@@ -25,6 +25,12 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
 
+
+    public Page<ProductDto> findBooks(ProductCriteria criteria, int pageNo, int pageSize) {
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        return productRepository.findAll(criteria, paging).map(productMapper::toDto);
+    }
+
     public Page<ProductDto> getProducts(int pageNo, int pageSize) {
         Pageable paging = PageRequest.of(pageNo, pageSize);
         return productRepository.findAll(paging).map(productMapper::toDto);
