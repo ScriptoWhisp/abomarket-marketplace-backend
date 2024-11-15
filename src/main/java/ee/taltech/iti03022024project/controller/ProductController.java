@@ -41,7 +41,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
         if (token == null || token.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -64,7 +64,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @Valid @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
         // reminder to myself: change forbidding so it checks the CURRENT product seller id as well
 
 
