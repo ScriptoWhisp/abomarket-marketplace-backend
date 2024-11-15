@@ -12,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/products")
@@ -22,16 +20,12 @@ public class ProductController {
     private final ProductService productService;
     private final JwtRequestFilter jwtRequestFilter;
 
-    @GetMapping("/test")
-    public ResponseEntity<PageResponse<ProductDto>> test(@Valid @ModelAttribute ProductSearchCriteria criteria) {
-        return ResponseEntity.ok(productService.findBooks(criteria, 0, 5));
-    }
-
     @GetMapping
-    public ResponseEntity<Page<ProductDto>> getProducts(
+    public ResponseEntity<PageResponse<ProductDto>> getProducts(
+            @Valid @ModelAttribute ProductSearchCriteria criteria,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "5") int pageSize) {
-        return ResponseEntity.ok(productService.getProducts(pageNo, pageSize));
+        return ResponseEntity.ok(productService.getProducts(criteria, pageNo, pageSize));
     }
 
     @GetMapping("/{id}")

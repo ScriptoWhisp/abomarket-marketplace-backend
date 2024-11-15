@@ -30,7 +30,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
 
-    public PageResponse<ProductDto> findBooks(ProductSearchCriteria criteria, int pageNo, int pageSize) {
+    public PageResponse<ProductDto> getProducts(ProductSearchCriteria criteria, int pageNo, int pageSize) {
         // criteria
         Specification<ProductEntity> spec = Specification.where(null);
 
@@ -76,10 +76,6 @@ public class ProductService {
         return response;
     }
 
-    public Page<ProductDto> getProducts(int pageNo, int pageSize) {
-        Pageable paging = PageRequest.of(pageNo, pageSize);
-        return productRepository.findAll(paging).map(productMapper::toDto);
-    }
 
     public Optional<ProductDto> getProductById(int id) {
         return productRepository.findById(id).map(productMapper::toDto);
