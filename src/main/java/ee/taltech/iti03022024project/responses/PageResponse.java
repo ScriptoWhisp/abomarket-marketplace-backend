@@ -1,5 +1,7 @@
 package ee.taltech.iti03022024project.responses;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public record PageResponse<T>(
@@ -9,4 +11,7 @@ public record PageResponse<T>(
     long totalElements,
     int totalPages
 ) {
+    public PageResponse(Page<T> page) {
+        this(page.getContent(), page.getNumber(), page.getSize(), page.getTotalElements(), page.getTotalPages());
+    }
 }

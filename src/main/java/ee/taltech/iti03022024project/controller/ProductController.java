@@ -2,6 +2,7 @@ package ee.taltech.iti03022024project.controller;
 
 import ee.taltech.iti03022024project.criteria.ProductSearchCriteria;
 import ee.taltech.iti03022024project.dto.ProductDto;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.security.JwtRequestFilter;
 import ee.taltech.iti03022024project.service.ProductService;
 import io.jsonwebtoken.Claims;
@@ -22,7 +23,7 @@ public class ProductController {
     private final JwtRequestFilter jwtRequestFilter;
 
     @GetMapping("/test")
-    public ResponseEntity<Page<ProductDto>> test(@Valid @ModelAttribute ProductSearchCriteria criteria) {
+    public ResponseEntity<PageResponse<ProductDto>> test(@Valid @ModelAttribute ProductSearchCriteria criteria) {
         return ResponseEntity.ok(productService.findBooks(criteria, 0, 5));
     }
 

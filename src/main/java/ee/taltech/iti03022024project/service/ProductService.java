@@ -7,6 +7,7 @@ import ee.taltech.iti03022024project.mapstruct.ProductMapper;
 import ee.taltech.iti03022024project.domain.CategoryEntity;
 import ee.taltech.iti03022024project.repository.CategoryRepository;
 import ee.taltech.iti03022024project.domain.ProductEntity;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.specifications.ProductSpecifications;
 import jakarta.transaction.Transactional;
 import ee.taltech.iti03022024project.repository.ProductRepository;
@@ -29,7 +30,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
 
-    public Page<ProductDto> findBooks(ProductSearchCriteria criteria, int pageNo, int pageSize) {
+    public PageResponse<ProductDto> findBooks(ProductSearchCriteria criteria, int pageNo, int pageSize) {
         // criteria
         Specification<ProductEntity> spec = Specification.where(null);
 
@@ -61,15 +62,18 @@ public class ProductService {
             spec = spec.and(ProductSpecifications.hasCategory(criteria.category().getCategoryId()));
         }
 
-        if (criteria.dateAddedMin() != null && criteria.dateAddedMax() != null) {
-            spec = spec.and(ProductSpecifications.inDateRange(criteria.dateAddedMin(), criteria.dateAddedMax()));
-        }
+//        if (criteria.dateAddedMin() != null && criteria.dateAddedMax() != null) {
+//            spec = spec.and(ProductSpecifications.inDateRange(criteria.dateAddedMin(), criteria.dateAddedMax()));
+//        }
 
+        String sortBy = criteria.sortDirection() == null ? "ASC" : criteria.sortDirection();
+        Sort sort = Sort.by(Sort.Direction.valueOf(sortBy), "productId");
+        Pageable paging = PageRequest.of(pageNo, pageSize, sort);
 
-        Sort sort = Sort.by(Sort.Direction.ASC, "productId");
-        Pageable paging = PageRequest.of(pageNo, pageSize);
+        Page<ProductEntity> page = productRepository.findAll(spec, paging);
+        PageResponse<ProductDto> response = new PageResponse<>(page.map(productMapper::toDto));
 
-        return productRepository.findAll(spec, paging).map(productMapper::toDto);
+        return response;
     }
 
     public Page<ProductDto> getProducts(int pageNo, int pageSize) {

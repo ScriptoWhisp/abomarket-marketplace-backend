@@ -2,10 +2,7 @@ package ee.taltech.iti03022024project.criteria;
 
 import ee.taltech.iti03022024project.domain.CategoryEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 
 
 import java.time.Instant;
@@ -28,6 +25,8 @@ public record ProductSearchCriteria(
         Long dateAddedMin,
         @NotNull
         Long dateAddedMax,
+        @Pattern(regexp = "ASC|DESC", flags = Pattern.Flag.CASE_INSENSITIVE)
+        String sortDirection,
         String imageUrl
 ) {
 

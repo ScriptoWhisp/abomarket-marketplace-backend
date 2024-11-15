@@ -55,9 +55,9 @@ public class ProductSpecifications {
     }
 
 
-    // idk if works
-    public static Specification<ProductEntity> inDateRange(long start, long end) {
-        return (root, query, criteriaBuilder) ->
-                start == 0 && end == 0 ? null : criteriaBuilder.between(root.get("dateAdded"), Instant.ofEpochMilli(start), Instant.ofEpochMilli(end));
-    }
+//    // idk if works
+//    public static Specification<ProductEntity> inDateRange(long start, long end) {
+//        return (root, query, criteriaBuilder) ->
+//                start == 0 && end == 0 ? null : criteriaBuilder.between(root.get("dateAdded"), Instant.ofEpochMilli(start), Instant.ofEpochMilli(end));
+//    }
 }
