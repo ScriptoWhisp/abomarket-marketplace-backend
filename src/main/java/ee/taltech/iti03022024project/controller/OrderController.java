@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -22,22 +21,23 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public Optional<OrderDto> getOrderById(@PathVariable int id) {
-        return orderService.getOrderById(id);
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable int id) {
+        return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
     @PostMapping
     public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) {
-        return orderService.createOrder(orderDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
+        return ResponseEntity.ok(orderService.createOrder(orderDto));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable int id, @RequestBody OrderDto orderDto) {
-        return orderService.updateOrder(id, orderDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(orderService.updateOrder(id, orderDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable int id) {
-        return orderService.deleteOrder(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        orderService.deleteOrder(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -28,19 +27,20 @@ public class OrderItemController {
     }
 
     @GetMapping("/{id}")
-    public Optional<OrderItemDto> getOrderItemById(@PathVariable int id) {
+    public OrderItemDto getOrderItemById(@PathVariable int id) {
         return orderItemService.getOrderItemById(id);
     }
 
     @PostMapping
     public ResponseEntity<OrderItemDto> createOrderItem(@RequestBody OrderItemDto orderItemDto) {
-        return orderItemService.createOrderItem(orderItemDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
+        return ResponseEntity.ok(orderItemService.createOrderItem(orderItemDto));
     }
 
     // No need to implement updateOrderItem method for now
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrderItem(@PathVariable int id) {
-        return orderItemService.deleteOrderItem(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        orderItemService.deleteOrderItem(id);
+        return ResponseEntity.noContent().build();
     }
 }

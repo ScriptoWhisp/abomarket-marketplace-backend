@@ -22,21 +22,22 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable int id) {
-        return categoryService.getCategoryById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
-        return categoryService.createCategory(categoryDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
+        return ResponseEntity.ok(categoryService.createCategory(categoryDto));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable int id, @RequestBody CategoryDto categoryDto) {
-        return categoryService.updateCategory(id, categoryDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(categoryService.updateCategory(id, categoryDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
-        return categoryService.deleteCategory(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
     }
 }
