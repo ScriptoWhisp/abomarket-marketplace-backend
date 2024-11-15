@@ -22,21 +22,22 @@ public class StatusController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StatusDto> getStatusById(@PathVariable int id) {
-        return statusService.getStatusById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(statusService.getStatusById(id));
     }
 
     @PostMapping
     public ResponseEntity<StatusDto> createStatus(@RequestBody StatusDto statusDto) {
-        return statusService.createStatus(statusDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
+        return ResponseEntity.ok(statusService.createStatus(statusDto));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<StatusDto> updateStatus(@PathVariable int id, @RequestBody StatusDto statusDto) {
-        return statusService.updateStatus(id, statusDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(statusService.updateStatus(id, statusDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStatus(@PathVariable int id) {
-        return statusService.deleteStatus(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        statusService.deleteStatus(id);
+        return ResponseEntity.noContent().build();
     }
 }

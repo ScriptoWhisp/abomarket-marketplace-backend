@@ -30,27 +30,28 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable int id) {
-        return userService.getUserById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @GetMapping("/profile")
     public ResponseEntity<UserDto> getAuthorizedUser() {
-        return userService.getAuthorizedUser().map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+        return ResponseEntity.ok(userService.getAuthorizedUser());
     }
 
     @PatchMapping("/profile")
     public ResponseEntity<UserDto> patchAuthorizedUser(@RequestBody UserDto userDto) {
-        return userService.patchAuthorizedUser(userDto).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+        return ResponseEntity.ok(userService.patchAuthorizedUser(userDto));
     }
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-        return userService.createUser(userDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
+        return ResponseEntity.ok(userService.createUser(userDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        return userService.deleteUser(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

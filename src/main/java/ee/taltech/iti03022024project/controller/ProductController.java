@@ -1,9 +1,7 @@
 package ee.taltech.iti03022024project.controller;
 
 import ee.taltech.iti03022024project.dto.ProductDto;
-import ee.taltech.iti03022024project.security.JwtRequestFilter;
 import ee.taltech.iti03022024project.service.ProductService;
-import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     private final ProductService productService;
-    private final JwtRequestFilter jwtRequestFilter;
 
     @GetMapping
     public ResponseEntity<Page<ProductDto>> getProducts(
@@ -36,7 +33,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable int id) {
-        return productService.getProductById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @GetMapping("/user/{id}")
@@ -48,53 +45,18 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
-        if (token == null || token.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        // parse token and check if userid is the same as in productDto
-        // if not, return 403
-
-        // because token is "Bearer ......"
-        Claims claims = jwtRequestFilter.parseToken(token.split(" ")[1]);
-        if (claims == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        int userId = (int) claims.get("userId");
-        if (userId != productDto.getSellerId()) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return productService.createProduct(productDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
+        return ResponseEntity.ok(productService.createProduct(productDto, token));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
-        if (token == null || token.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        // parse token and check if userid is the same as in productDto
-        // if not, return 403
-
-        // because token is "Bearer ......"
-        Claims claims = jwtRequestFilter.parseToken(token.split(" ")[1]);
-        if (claims == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        int userId = (int) claims.get("userId");
-        if (userId != productDto.getSellerId()) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return productService.updateProduct(id, productDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(productService.updateProduct(id, productDto, token));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable int id, @RequestHeader("Authorization") String token) {
-        return productService.deleteProduct(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        productService.deleteProduct(id, token);
+        return ResponseEntity.notFound().build();
     }
 
 }

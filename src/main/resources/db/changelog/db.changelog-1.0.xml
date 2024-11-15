@@ -169,4 +169,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="2024-11-14 make category name not nullable" author="Alexander Smirnov">
+        <addNotNullConstraint tableName="categories" columnName="category_name"/>
+    </changeSet>
+
+    <changeSet id="2024-11-15 make status name not nullable" author="Alexander Smirnov">
+        <addNotNullConstraint tableName="statuses" columnName="status_name"/>
+    </changeSet>
+
 </databaseChangeLog>

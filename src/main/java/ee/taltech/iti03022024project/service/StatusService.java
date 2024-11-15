@@ -1,16 +1,16 @@
 package ee.taltech.iti03022024project.service;
 
 
-import ee.taltech.iti03022024project.dto.StatusDto;
-import ee.taltech.iti03022024project.mapstruct.StatusMapper;
 import ee.taltech.iti03022024project.domain.StatusEntity;
+import ee.taltech.iti03022024project.dto.StatusDto;
+import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
+import ee.taltech.iti03022024project.mapstruct.StatusMapper;
 import ee.taltech.iti03022024project.repository.StatusRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -25,28 +25,35 @@ public class StatusService {
         return statusRepository.findAll().stream().map(statusMapper::toDto).toList();
     }
 
-    public Optional<StatusDto> getStatusById(int id) {
-        return statusRepository.findById(id).map(statusMapper::toDto);
+    public StatusDto getStatusById(int id) {
+        return statusRepository.findById(id).map(statusMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Status with id " + id + " not found"));
     }
 
-    public Optional<StatusDto> createStatus(StatusDto statusDto) {
-        StatusEntity newStatus = statusMapper.toEntity(statusDto);
-        StatusEntity savedStatus = statusRepository.save(newStatus);
-        return Optional.of(statusMapper.toDto(savedStatus));
+    public StatusDto createStatus(StatusDto statusDto) {
+        try {
+            StatusEntity newStatus = statusMapper.toEntity(statusDto);
+            StatusEntity savedStatus = statusRepository.save(newStatus);
+            return statusMapper.toDto(savedStatus);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Failed to create status: " + e.getMessage());
+        }
     }
 
-    public Optional<StatusDto> updateStatus(int id, StatusDto statusDto) {
-        Optional<StatusEntity> statusToUpdate = statusRepository.findById(id);
-        statusToUpdate.ifPresent(status -> {
-            status.setStatusName(statusDto.getName() != null ? statusDto.getName() : status.getStatusName());
-            statusRepository.save(status);
-        });
-        return statusToUpdate.map(statusMapper::toDto);
+    public StatusDto updateStatus(int id, StatusDto statusDto) {
+        StatusEntity statusToUpdate = statusRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Status with id " + id + " not found"));
+
+        statusToUpdate.setStatusName(statusDto.getName() != null ? statusDto.getName() : statusToUpdate.getStatusName());
+
+        StatusEntity updatedStatus = statusRepository.save(statusToUpdate);
+
+        return statusMapper.toDto(updatedStatus);
     }
 
-    public Optional<StatusDto> deleteStatus(int id) {
-        Optional<StatusEntity> statusToDelete = statusRepository.findById(id);
-        statusToDelete.ifPresent(statusRepository::delete);
-        return statusToDelete.map(statusMapper::toDto);
+    public void deleteStatus(int id) {
+        StatusEntity statusToDelete = statusRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Status with id " + id + " not found"));
+        statusRepository.delete(statusToDelete);
     }
 }
