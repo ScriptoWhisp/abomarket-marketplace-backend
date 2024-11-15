@@ -1,17 +1,21 @@
 package ee.taltech.iti03022024project.service;
 
 
+import ee.taltech.iti03022024project.criteria.ProductSearchCriteria;
 import ee.taltech.iti03022024project.dto.ProductDto;
 import ee.taltech.iti03022024project.mapstruct.ProductMapper;
 import ee.taltech.iti03022024project.domain.CategoryEntity;
 import ee.taltech.iti03022024project.repository.CategoryRepository;
 import ee.taltech.iti03022024project.domain.ProductEntity;
+import ee.taltech.iti03022024project.specifications.ProductSpecifications;
 import jakarta.transaction.Transactional;
 import ee.taltech.iti03022024project.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,10 +29,47 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
 
+    public Page<ProductDto> findBooks(ProductSearchCriteria criteria, int pageNo, int pageSize) {
+        // criteria
+        Specification<ProductEntity> spec = Specification.where(null);
 
-    public Page<ProductDto> findBooks(ProductCriteria criteria, int pageNo, int pageSize) {
+        if (criteria.productId() != null) {
+            spec = spec.and(ProductSpecifications.hasId(criteria.productId()));
+        }
+
+        if (criteria.name() != null) {
+            spec = spec.and(ProductSpecifications.hasName(criteria.name()));
+        }
+
+        if (criteria.description() != null) {
+            spec = spec.and(ProductSpecifications.hasSubstringInDescription(criteria.description()));
+        }
+
+        if (criteria.price() != null) {
+            spec = spec.and(ProductSpecifications.priceInRange(criteria.price(), criteria.price()));
+        }
+
+        if (criteria.quantityInStock() != null) {
+            spec = spec.and(ProductSpecifications.leftAtLeast(criteria.quantityInStock()));
+        }
+
+        if (criteria.seller() != null) {
+            spec = spec.and(ProductSpecifications.hasSeller(criteria.seller().getUserId()));
+        }
+
+        if (criteria.category() != null) {
+            spec = spec.and(ProductSpecifications.hasCategory(criteria.category().getCategoryId()));
+        }
+
+        if (criteria.dateAddedMin() != null && criteria.dateAddedMax() != null) {
+            spec = spec.and(ProductSpecifications.inDateRange(criteria.dateAddedMin(), criteria.dateAddedMax()));
+        }
+
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "productId");
         Pageable paging = PageRequest.of(pageNo, pageSize);
-        return productRepository.findAll(criteria, paging).map(productMapper::toDto);
+
+        return productRepository.findAll(spec, paging).map(productMapper::toDto);
     }
 
     public Page<ProductDto> getProducts(int pageNo, int pageSize) {

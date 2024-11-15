@@ -1,9 +1,11 @@
 package ee.taltech.iti03022024project.controller;
 
+import ee.taltech.iti03022024project.criteria.ProductSearchCriteria;
 import ee.taltech.iti03022024project.dto.ProductDto;
 import ee.taltech.iti03022024project.security.JwtRequestFilter;
 import ee.taltech.iti03022024project.service.ProductService;
 import io.jsonwebtoken.Claims;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,11 @@ public class ProductController {
 
     private final ProductService productService;
     private final JwtRequestFilter jwtRequestFilter;
+
+    @GetMapping("/test")
+    public ResponseEntity<Page<ProductDto>> test(@Valid @ModelAttribute ProductSearchCriteria criteria) {
+        return ResponseEntity.ok(productService.findBooks(criteria, 0, 5));
+    }
 
     @GetMapping
     public ResponseEntity<Page<ProductDto>> getProducts(
