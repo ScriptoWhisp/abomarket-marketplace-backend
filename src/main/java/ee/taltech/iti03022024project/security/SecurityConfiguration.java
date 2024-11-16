@@ -2,12 +2,11 @@ package ee.taltech.iti03022024project.security;
 
 import ee.taltech.iti03022024project.repository.UsersRepository;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -48,6 +47,17 @@ public class SecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .exceptionHandling(handling -> {
+                    handling.authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                        response.getWriter().write("Unauthorized");
+                    });
+                    handling.accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        response.getWriter().write("Unauthorized");
+                    });
+                })
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "api/users", "api/public/login").permitAll()

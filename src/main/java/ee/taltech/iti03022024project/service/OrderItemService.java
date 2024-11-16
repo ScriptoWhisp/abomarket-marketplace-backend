@@ -1,15 +1,16 @@
 package ee.taltech.iti03022024project.service;
 
-import ee.taltech.iti03022024project.dto.OrderItemDto;
-import ee.taltech.iti03022024project.mapstruct.OrderItemMapper;
 import ee.taltech.iti03022024project.domain.OrderItemEntity;
+import ee.taltech.iti03022024project.dto.OrderItemDto;
+import ee.taltech.iti03022024project.exception.ObjectCreationException;
+import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
+import ee.taltech.iti03022024project.mapstruct.OrderItemMapper;
 import ee.taltech.iti03022024project.repository.OrderItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,21 +24,27 @@ public class OrderItemService {
         return orderItemRepository.findAll().stream().map(orderItemMapper::toDto).toList();
     }
 
-    public Optional<OrderItemDto> getOrderItemById(int id) {
-        return orderItemRepository.findById(id).map(orderItemMapper::toDto);
+    public OrderItemDto getOrderItemById(int id) {
+        return orderItemRepository.findById(id).map(orderItemMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Order item with id " + id + " not found"));
     }
 
-    public Optional<OrderItemDto> createOrderItem(OrderItemDto orderItemDto) {
-        OrderItemEntity newOrderItem = orderItemMapper.toEntity(orderItemDto);
-        OrderItemEntity savedOrderItem = orderItemRepository.save(newOrderItem);
-        return Optional.of(orderItemMapper.toDto(savedOrderItem));
+    public OrderItemDto createOrderItem(OrderItemDto orderItemDto) {
+        try {
+            OrderItemEntity newOrderItem = orderItemMapper.toEntity(orderItemDto);
+            OrderItemEntity savedOrderItem = orderItemRepository.save(newOrderItem);
+            return orderItemMapper.toDto(savedOrderItem);
+        } catch (Exception e) {
+            throw new ObjectCreationException("Failed to create order item: " + e.getMessage());
+        }
     }
 
 
-    public Optional<Object> deleteOrderItem(int id) {
-        Optional<OrderItemEntity> orderItemToDelete = orderItemRepository.findById(id);
-        orderItemToDelete.ifPresent(orderItemRepository::delete);
-        return orderItemToDelete.map(orderItemMapper::toDto);
+    public void deleteOrderItem(int id) {
+        OrderItemEntity orderItemToDelete = orderItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order item with id " + id + " not found"));
+
+        orderItemRepository.delete(orderItemToDelete);
     }
 }
 

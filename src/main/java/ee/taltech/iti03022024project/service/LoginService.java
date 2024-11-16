@@ -2,7 +2,7 @@ package ee.taltech.iti03022024project.service;
 
 
 import ee.taltech.iti03022024project.domain.UserEntity;
-import ee.taltech.iti03022024project.exception.ApplicationException;
+import ee.taltech.iti03022024project.exception.LoginException;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
 import ee.taltech.iti03022024project.repository.UsersRepository;
 import ee.taltech.iti03022024project.security.LoginRequestDto;
@@ -32,10 +32,10 @@ public class LoginService {
         System.out.println(request.getEmail());
         UserEntity user = usersRepository
                 .findByEmail(request.getEmail())
-                .orElseThrow(() -> new ApplicationException("User Not Found!"));
+                .orElseThrow(() -> new LoginException("User Not Found!"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ApplicationException("Invalid Password!");
+            throw new LoginException("Invalid Password!");
         }
 
         String token = generateToken(user);

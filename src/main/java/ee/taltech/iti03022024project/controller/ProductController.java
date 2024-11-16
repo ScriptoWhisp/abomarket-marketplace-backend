@@ -7,10 +7,20 @@ import ee.taltech.iti03022024project.security.JwtRequestFilter;
 import ee.taltech.iti03022024project.service.ProductService;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
+import ee.taltech.iti03022024project.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @AllArgsConstructor
 @RestController
@@ -18,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService;
-    private final JwtRequestFilter jwtRequestFilter;
 
     @GetMapping
     public ResponseEntity<PageResponse<ProductDto>> getProducts(
@@ -30,7 +39,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable int id) {
-        return productService.getProductById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @GetMapping("/user/{id}")
@@ -41,6 +50,7 @@ public class ProductController {
     }
 
     @PostMapping
+<<<<<<< src/main/java/ee/taltech/iti03022024project/controller/ProductController.java
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
         if (token == null || token.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -87,11 +97,21 @@ public class ProductController {
         }
 
         return productService.updateProduct(id, productDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+=======
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(productService.createProduct(productDto, token));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(productService.updateProduct(id, productDto, token));
+>>>>>>> src/main/java/ee/taltech/iti03022024project/controller/ProductController.java
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable int id, @RequestHeader("Authorization") String token) {
-        return productService.deleteProduct(id).isPresent() ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        productService.deleteProduct(id, token);
+        return ResponseEntity.notFound().build();
     }
 
 }
