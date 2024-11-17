@@ -49,7 +49,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCategoryNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        log.warn("Resource not found: {}", ex.getMessage());
+        log.error("Resource not found: {}", ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage(),
                 LocalDateTime.now(),

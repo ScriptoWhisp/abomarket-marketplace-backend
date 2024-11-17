@@ -3,6 +3,7 @@ package ee.taltech.iti03022024project.controller;
 import ee.taltech.iti03022024project.dto.OrderItemDto;
 import ee.taltech.iti03022024project.service.OrderItemService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/order_items")
@@ -33,14 +35,19 @@ public class OrderItemController {
 
     @PostMapping
     public ResponseEntity<OrderItemDto> createOrderItem(@RequestBody OrderItemDto orderItemDto) {
-        return ResponseEntity.ok(orderItemService.createOrderItem(orderItemDto));
+        log.info("Received request to create order: {}", orderItemDto);
+        OrderItemDto createdOrderItem = orderItemService.createOrderItem(orderItemDto);
+        log.info("OrderItem created successfully: {}", createdOrderItem);
+        return ResponseEntity.ok(createdOrderItem);
     }
 
     // No need to implement updateOrderItem method for now
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrderItem(@PathVariable int id) {
+        log.info("Received request to delete order item with id {}", id);
         orderItemService.deleteOrderItem(id);
+        log.info("OrderItem deleted successfully: {}", id);
         return ResponseEntity.noContent().build();
     }
 }
