@@ -3,24 +3,12 @@ package ee.taltech.iti03022024project.controller;
 import ee.taltech.iti03022024project.criteria.ProductSearchCriteria;
 import ee.taltech.iti03022024project.dto.ProductDto;
 import ee.taltech.iti03022024project.responses.PageResponse;
-import ee.taltech.iti03022024project.security.JwtRequestFilter;
 import ee.taltech.iti03022024project.service.ProductService;
-import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
-import ee.taltech.iti03022024project.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
@@ -50,54 +38,6 @@ public class ProductController {
     }
 
     @PostMapping
-<<<<<<< src/main/java/ee/taltech/iti03022024project/controller/ProductController.java
-    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
-        if (token == null || token.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        // parse token and check if userid is the same as in productDto
-        // if not, return 403
-
-        // because token is "Bearer ......"
-        Claims claims = jwtRequestFilter.parseToken(token.split(" ")[1]);
-        if (claims == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        int userId = (int) claims.get("userId");
-        if (userId != productDto.getSellerId()) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return productService.createProduct(productDto).map(ResponseEntity::ok).orElse(ResponseEntity.internalServerError().build());
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @Valid @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
-        // reminder to myself: change forbidding so it checks the CURRENT product seller id as well
-
-
-        if (token == null || token.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        // parse token and check if userid is the same as in productDto
-        // if not, return 403
-
-        // because token is "Bearer ......"
-        Claims claims = jwtRequestFilter.parseToken(token.split(" ")[1]);
-        if (claims == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        int userId = (int) claims.get("userId");
-        if (userId != productDto.getSellerId()) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return productService.updateProduct(id, productDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-=======
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(productService.createProduct(productDto, token));
     }
@@ -105,7 +45,6 @@ public class ProductController {
     @PatchMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(productService.updateProduct(id, productDto, token));
->>>>>>> src/main/java/ee/taltech/iti03022024project/controller/ProductController.java
     }
 
     @DeleteMapping("/{id}")
