@@ -60,8 +60,10 @@ public class SecurityConfiguration {
                 })
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "api/users", "api/public/login").permitAll()
-                        .anyRequest().authenticated())
+                        // permit to /api/users/id for all
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+                        .requestMatchers("/api/users/**").authenticated()
+                        .anyRequest().permitAll())
                 .addFilterBefore(new JwtRequestFilter(key()), UsernamePasswordAuthenticationFilter.class)
                 .build();
 
