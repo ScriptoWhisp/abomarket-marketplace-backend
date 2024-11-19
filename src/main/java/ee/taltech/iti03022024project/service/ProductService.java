@@ -94,11 +94,10 @@ public class ProductService {
             throw new BadTokenException("Invalid token");
         }
 
-//        This basically cannot happen through normal means
-//        int userId = (int) claims.get("userId");
-//        if (userId != productDto.getSellerId()) {
-//            throw new BadTokenException("User and seller id not match");
-//        }
+        int userId = (int) claims.get("userId");
+        if (userId != productDto.getSellerId()) {
+            throw new BadTokenException("User and seller id not match");
+        }
 
     }
 
