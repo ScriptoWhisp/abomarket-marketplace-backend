@@ -105,13 +105,13 @@ public class ProductService {
 
     public ProductDto getProductById(int id) {
         return productRepository.findById(id).map(productMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id" + id + "not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
     }
 
     public Page<ProductDto> getProductsByUserId(int id, int pageNo, int pageSize) {
         Pageable paging = PageRequest.of(pageNo, pageSize);
         if (usersRepository.findById(id).isEmpty()) {
-            throw new ResourceNotFoundException("User with id" + id + "not found");
+            throw new ResourceNotFoundException("User with id " + id + " not found");
         }
         return productRepository.findAllBySeller_UserId(id, paging).map(productMapper::toDto);
     }
@@ -173,7 +173,7 @@ public class ProductService {
     public void deleteProduct(int id, String token) {
         log.info("Attempting to delete product with id {}", id);
         ProductEntity productToDelete = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id" + id + "not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
         tokenValidation(productMapper.toDto(productToDelete), token);
 

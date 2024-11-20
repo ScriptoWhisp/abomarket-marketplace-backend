@@ -32,7 +32,7 @@ public class OrderService {
 
     public OrderDto getOrderById(int id) {
         return orderRepository.findById(id).map(orderMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Order with" + id + "not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order with " + id + " not found"));
     }
 
     public OrderDto createOrder(OrderDto orderDto) {
