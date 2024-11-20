@@ -2,13 +2,8 @@ package ee.taltech.iti03022024project.service;
 
 
 import ee.taltech.iti03022024project.criteria.ProductSearchCriteria;
-import ee.taltech.iti03022024project.dto.ProductDto;
-import ee.taltech.iti03022024project.mapstruct.ProductMapper;
 import ee.taltech.iti03022024project.domain.CategoryEntity;
 import ee.taltech.iti03022024project.domain.ProductEntity;
-import ee.taltech.iti03022024project.responses.PageResponse;
-import ee.taltech.iti03022024project.specifications.ProductSpecifications;
-import jakarta.transaction.Transactional;
 import ee.taltech.iti03022024project.dto.ProductDto;
 import ee.taltech.iti03022024project.exception.BadTokenException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
@@ -16,7 +11,10 @@ import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.ProductMapper;
 import ee.taltech.iti03022024project.repository.CategoryRepository;
 import ee.taltech.iti03022024project.repository.ProductRepository;
+import ee.taltech.iti03022024project.repository.UsersRepository;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.security.JwtRequestFilter;
+import ee.taltech.iti03022024project.specifications.ProductSpecifications;
 import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +37,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
+    private final UsersRepository usersRepository;
 
     public PageResponse<ProductDto> getProducts(ProductSearchCriteria criteria, int pageNo, int pageSize) {
         // criteria
@@ -111,6 +110,9 @@ public class ProductService {
 
     public Page<ProductDto> getProductsByUserId(int id, int pageNo, int pageSize) {
         Pageable paging = PageRequest.of(pageNo, pageSize);
+        if (usersRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("User with id" + id + "not found");
+        }
         return productRepository.findAllBySeller_UserId(id, paging).map(productMapper::toDto);
     }
 
