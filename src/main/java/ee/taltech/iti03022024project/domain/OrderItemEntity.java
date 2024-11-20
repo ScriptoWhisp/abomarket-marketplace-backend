@@ -1,5 +1,6 @@
 package ee.taltech.iti03022024project.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
+@Schema(hidden = true)
 @Data
 @Entity(name = "order_items")
 public class OrderItemEntity {

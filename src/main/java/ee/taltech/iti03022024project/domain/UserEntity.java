@@ -1,5 +1,6 @@
 package ee.taltech.iti03022024project.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,10 +17,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
+@Schema(hidden = true)
 @Getter
 @Setter
 @Entity(name = "users")

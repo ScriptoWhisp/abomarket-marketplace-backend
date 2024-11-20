@@ -106,9 +106,10 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id" + id + "not found"));
     }
 
-    public Page<ProductDto> getProductsByUserId(int id, int pageNo, int pageSize) {
+    public PageResponse<ProductDto> getProductsByUserId(int id, int pageNo, int pageSize) {
         Pageable paging = PageRequest.of(pageNo, pageSize);
-        return productRepository.findAllBySeller_UserId(id, paging).map(productMapper::toDto);
+        Page<ProductEntity> page = productRepository.findAllBySeller_UserId(id, paging);
+        return new PageResponse<>(page.map(productMapper::toDto));
     }
 
     public ProductDto createProduct(ProductDto productDto, String token) {
