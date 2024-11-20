@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,8 +21,7 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Entity(name = "users")
 public class UserEntity implements UserDetails {
 

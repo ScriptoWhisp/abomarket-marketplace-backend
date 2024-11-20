@@ -31,7 +31,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
         log.info("Received request to create category: {}", categoryDto);
         CategoryDto createdCategory = categoryService.createCategory(categoryDto);
-        log.info("Category created successfully: {}", categoryDto);
+        log.info("Category created successfully: {}", createdCategory);
         return ResponseEntity.ok(createdCategory);
     }
 
