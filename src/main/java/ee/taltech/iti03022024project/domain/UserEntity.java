@@ -1,5 +1,15 @@
 package ee.taltech.iti03022024project.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +21,9 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
+@Schema(hidden = true)
+@Getter
+@Setter
 @Data
 @Entity(name = "users")
 public class UserEntity implements UserDetails {
