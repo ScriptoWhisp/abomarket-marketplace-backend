@@ -20,6 +20,7 @@ import ee.taltech.iti03022024project.security.JwtRequestFilter;
 import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -85,6 +87,7 @@ public class ProductService {
     }
 
     private void tokenValidation(ProductDto productDto, String token) {
+        log.info("Starting token validation");
         if (token == null || token.isEmpty()) {
             throw new BadTokenException("Token is null or empty");
         }
@@ -98,7 +101,7 @@ public class ProductService {
         if (userId != productDto.getSellerId()) {
             throw new BadTokenException("User and seller id not match");
         }
-
+        log.info("Token validation completed successfully");
     }
 
     public ProductDto getProductById(int id) {
@@ -115,8 +118,10 @@ public class ProductService {
         tokenValidation(productDto, token);
 
         try {
+            log.info("Attempting to create product with data: {}", productDto);
             ProductEntity newProduct = productMapper.toEntity(productDto);
             ProductEntity savedProduct = productRepository.save(newProduct);
+            log.info("Product created successfully: {}", savedProduct);
             return productMapper.toDto(savedProduct);
         } catch (Exception e) {
             throw new ObjectCreationException("Failed to create product: " + e.getMessage());
@@ -125,6 +130,8 @@ public class ProductService {
 
     public ProductDto updateProduct(int id, ProductDto productDto, String token) {
         tokenValidation(productDto, token);
+
+        log.info("Attempting to update product with id {}, with data: {}", id, productDto);
 
         ProductEntity productToUpdate = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
@@ -156,10 +163,13 @@ public class ProductService {
 
         productRepository.save(productToUpdate);
 
+        log.info("Product updated successfully: {}", productToUpdate);
+
         return productMapper.toDto(productToUpdate);
     }
 
     public void deleteProduct(int id, String token) {
+        log.info("Attempting to delete product with id {}", id);
         ProductEntity productToDelete = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id" + id + "not found"));
 

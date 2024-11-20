@@ -10,6 +10,7 @@ import ee.taltech.iti03022024project.security.LoginResponseDto;
 import io.jsonwebtoken.Jwts;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
     public LoginResponseDto login(LoginRequestDto request) {
-        System.out.println(request.getEmail());
+        log.info("Attempting to login : {}", request);
         UserEntity user = usersRepository
                 .findByEmail(request.getEmail())
                 .orElseThrow(() -> new LoginException("User Not Found!"));
@@ -39,6 +41,7 @@ public class LoginService {
         }
 
         String token = generateToken(user);
+        log.info("User {} logged in", request.getEmail());
         return new LoginResponseDto(token);
     }
 

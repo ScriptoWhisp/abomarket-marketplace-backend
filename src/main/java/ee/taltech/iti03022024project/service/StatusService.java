@@ -8,10 +8,12 @@ import ee.taltech.iti03022024project.mapstruct.StatusMapper;
 import ee.taltech.iti03022024project.repository.StatusRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -32,8 +34,10 @@ public class StatusService {
 
     public StatusDto createStatus(StatusDto statusDto) {
         try {
+            log.info("Attempting to create status: {}", statusDto);
             StatusEntity newStatus = statusMapper.toEntity(statusDto);
             StatusEntity savedStatus = statusRepository.save(newStatus);
+            log.info("Status created successfully: {}", savedStatus);
             return statusMapper.toDto(savedStatus);
         } catch (Exception e) {
             throw new ResourceNotFoundException("Failed to create status: " + e.getMessage());
@@ -41,6 +45,7 @@ public class StatusService {
     }
 
     public StatusDto updateStatus(int id, StatusDto statusDto) {
+        log.info("Attempting to update status with id {}, with data: {}", id, statusDto);
         StatusEntity statusToUpdate = statusRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Status with id " + id + " not found"));
 
@@ -48,12 +53,16 @@ public class StatusService {
 
         StatusEntity updatedStatus = statusRepository.save(statusToUpdate);
 
+        log.info("Status updated successfully: {}", updatedStatus);
+
         return statusMapper.toDto(updatedStatus);
     }
 
     public void deleteStatus(int id) {
+        log.info("Attempting to delete status with id {}", id);
         StatusEntity statusToDelete = statusRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Status with id " + id + " not found"));
         statusRepository.delete(statusToDelete);
+        log.info("Status deleted successfully: {}", statusToDelete);
     }
 }

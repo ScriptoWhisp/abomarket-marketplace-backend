@@ -10,11 +10,13 @@ import ee.taltech.iti03022024project.repository.UsersRepository;
 import ee.taltech.iti03022024project.security.AuthenticationFacade;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -45,14 +47,18 @@ public class UserService {
     }
 
     public UserDto patchAuthorizedUser(UserDto userDto) {
-        if (authenticationFacade.getAuthenticatedUser() == null)
+        log.info("Checking if user is authorized");
+        UserEntity authorizedUser = authenticationFacade.getAuthenticatedUser();
+        if (authorizedUser == null)
             throw new BadTokenException("User not authorized");
         else {
-            return updateUser(authenticationFacade.getAuthenticatedUser(), userDto);
+            log.info("User authorized: {}", authorizedUser);
+            return updateUser(authorizedUser, userDto);
         }
     }
 
     private UserDto updateUser(UserEntity userToUpdate, UserDto userDto) {
+        log.info("Attempting to update user with id {}, with data:{}", userToUpdate.getUserId(), userDto);
         userToUpdate.setFirstName(userDto.getFirstName() != null ? userDto.getFirstName() : userToUpdate.getFirstName());
         userToUpdate.setLastName(userDto.getLastName() != null ? userDto.getLastName() : userToUpdate.getLastName());
         userToUpdate.setEmail(userDto.getEmail() != null ? userDto.getEmail() : userToUpdate.getEmail());
@@ -60,14 +66,17 @@ public class UserService {
         userToUpdate.setPhone(userDto.getPhone() != null ? userDto.getPhone() : userToUpdate.getPhone());
         userToUpdate.setLocation(userDto.getLocation() != null ? userDto.getLocation() : userToUpdate.getLocation());
         usersRepository.save(userToUpdate);
+        log.info("User updated successfully: {}", userToUpdate);
         return userMapper.toDto(userToUpdate);
     }
 
     public UserDto createUser(UserDto userDto) {
         try {
+            log.info("Attempting to create user with data: {}", userDto);
             UserEntity newUser = userMapper.toEntity(userDto);
             newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
             UserEntity savedUser = usersRepository.save(newUser);
+            log.info("User created successfully: {}", newUser);
             return userMapper.toDto(savedUser);
         } catch (Exception e) {
             throw new BadTokenException("Failed to create user: " + e.getMessage());
@@ -75,9 +84,10 @@ public class UserService {
     }
 
     public void deleteUser(int id) {
+        log.info("Attempting to delete user with id {}", id);
         UserEntity userToDelete = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
         usersRepository.delete(userToDelete);
+        log.info("User deleted successfully: {}", userToDelete);
     }
-
 }

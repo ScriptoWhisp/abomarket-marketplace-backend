@@ -6,6 +6,7 @@ import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,17 +40,25 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(productService.createProduct(productDto, token));
+        log.info("Received request to create product: {}", productDto);
+        ProductDto createdProduct = productService.createProduct(productDto, token);
+        log.info("Product created successfully: {}", createdProduct);
+        return ResponseEntity.ok(createdProduct);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(productService.updateProduct(id, productDto, token));
+        log.info("Received request to update product with id {}, with data: {}", id, productDto);
+        ProductDto updatedProduct = productService.updateProduct(id, productDto, token);
+        log.info("Product updated successfully: {}", updatedProduct);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable int id, @RequestHeader("Authorization") String token) {
+        log.info("Received request to delete product with id {}", id);
         productService.deleteProduct(id, token);
+        log.info("Product deleted successfully: {}", id);
         return ResponseEntity.notFound().build();
     }
 

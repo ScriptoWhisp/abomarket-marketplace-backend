@@ -1,20 +1,12 @@
 package ee.taltech.iti03022024project.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
-@Getter
-@Setter
+@Data
 @Entity(name = "products")
 public class ProductEntity {
 
@@ -27,11 +19,11 @@ public class ProductEntity {
     private double price;
     private int quantityInStock;
     @ManyToOne
-    @JoinColumn(name="seller_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "seller_id", referencedColumnName = "user_id")
     private UserEntity seller;
 
     @ManyToOne
-    @JoinColumn(name="category_id", referencedColumnName = "category_id")
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private CategoryEntity category;
 
     @CreationTimestamp
