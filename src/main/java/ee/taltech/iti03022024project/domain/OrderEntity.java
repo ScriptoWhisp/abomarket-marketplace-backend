@@ -1,15 +1,7 @@
 package ee.taltech.iti03022024project.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 
 @Data
@@ -21,9 +13,9 @@ public class OrderEntity {
     @Column(name = "order_id")
     private int orderId;
     @ManyToOne
-    @JoinColumn(name="user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserEntity user;
     @ManyToOne
-    @JoinColumn(name="status_id", referencedColumnName = "status_id")
+    @JoinColumn(name = "status_id", referencedColumnName = "status_id")
     private StatusEntity status;
 }
