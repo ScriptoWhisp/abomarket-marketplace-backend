@@ -8,11 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.*;
 import lombok.Data;
 
 @Schema(hidden = true)
-@Getter @Setter
 @Data
 @Entity(name = "orders")
 public class OrderEntity {
