@@ -10,11 +10,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 
 import java.time.Instant;
 import java.util.Collection;
@@ -23,6 +24,7 @@ import java.util.List;
 @Schema(hidden = true)
 @Getter
 @Setter
+@Data
 @Entity(name = "users")
 public class UserEntity implements UserDetails {
 

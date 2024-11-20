@@ -11,9 +11,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/products")
@@ -55,7 +58,10 @@ public class ProductController {
     @ApiResponse(responseCode = "403", description = "Bad token.", content = @Content())
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(productService.createProduct(productDto, token));
+        log.info("Received request to create product: {}", productDto);
+        ProductDto createdProduct = productService.createProduct(productDto, token);
+        log.info("Product created successfully: {}", createdProduct);
+        return ResponseEntity.ok(createdProduct);
     }
 
     @Operation(summary = "Update product", description = "Updates product with the specified id and returns it.")
@@ -64,7 +70,10 @@ public class ProductController {
     @ApiResponse(responseCode = "403", description = "User's and seller's IDs do not match.", content = @Content())
     @PatchMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable int id, @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(productService.updateProduct(id, productDto, token));
+        log.info("Received request to update product with id {}, with data: {}", id, productDto);
+        ProductDto updatedProduct = productService.updateProduct(id, productDto, token);
+        log.info("Product updated successfully: {}", updatedProduct);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @Operation(summary = "Delete product", description = "Deletes product with the specified id.")
@@ -72,7 +81,9 @@ public class ProductController {
     @ApiResponse(responseCode = "404", description = "Product not found.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable int id, @RequestHeader("Authorization") String token) {
+        log.info("Received request to delete product with id {}", id);
         productService.deleteProduct(id, token);
+        log.info("Product deleted successfully: {}", id);
         return ResponseEntity.notFound().build();
     }
 

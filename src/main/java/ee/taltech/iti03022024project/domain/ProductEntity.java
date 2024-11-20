@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
@@ -17,6 +19,7 @@ import java.time.Instant;
 @Schema(hidden = true)
 @Getter
 @Setter
+@Data
 @Entity(name = "products")
 public class ProductEntity {
 
@@ -29,11 +32,11 @@ public class ProductEntity {
     private double price;
     private int quantityInStock;
     @ManyToOne
-    @JoinColumn(name="seller_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "seller_id", referencedColumnName = "user_id")
     private UserEntity seller;
 
     @ManyToOne
-    @JoinColumn(name="category_id", referencedColumnName = "category_id")
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private CategoryEntity category;
 
     @CreationTimestamp

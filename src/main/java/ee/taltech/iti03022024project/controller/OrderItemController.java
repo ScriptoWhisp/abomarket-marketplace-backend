@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/order_items")
@@ -47,7 +49,10 @@ public class OrderItemController {
     @ApiResponse(responseCode = "200", description = "Order item created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDto.class)))
     @PostMapping
     public ResponseEntity<OrderItemDto> createOrderItem(@RequestBody OrderItemDto orderItemDto) {
-        return ResponseEntity.ok(orderItemService.createOrderItem(orderItemDto));
+        log.info("Received request to create order: {}", orderItemDto);
+        OrderItemDto createdOrderItem = orderItemService.createOrderItem(orderItemDto);
+        log.info("OrderItem created successfully: {}", createdOrderItem);
+        return ResponseEntity.ok(createdOrderItem);
     }
 
     // No need to implement updateOrderItem method for now
@@ -57,7 +62,9 @@ public class OrderItemController {
     @ApiResponse(responseCode = "404", description = "Order item not found.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrderItem(@PathVariable int id) {
+        log.info("Received request to delete order item with id {}", id);
         orderItemService.deleteOrderItem(id);
+        log.info("OrderItem deleted successfully: {}", id);
         return ResponseEntity.noContent().build();
     }
 }
