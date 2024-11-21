@@ -1,12 +1,15 @@
 package ee.taltech.iti03022024project.security;
 
+import ee.taltech.iti03022024project.exception.BadTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-
+@Slf4j
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -29,11 +32,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
+        try {
         Optional<String> token = getToken(request);
-        if (token.isPresent()) {
-            Claims tokenBody = parseToken(token.get());
-            SecurityContext context = SecurityContextHolder.getContext();
-            context.setAuthentication(buildAuthToken(tokenBody));
+            if (token.isPresent()) {
+                Claims tokenBody = parseToken(token.get());
+                SecurityContext context = SecurityContextHolder.getContext();
+                context.setAuthentication(buildAuthToken(tokenBody));
+            }
+        } catch (SignatureException ex) {
+            log.error("Invalid JWT signature: {}", ex.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT signature");
+            return;
         }
 
         chain.doFilter(request, response);
