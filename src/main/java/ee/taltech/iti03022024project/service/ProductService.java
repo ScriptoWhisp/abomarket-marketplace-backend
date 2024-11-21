@@ -71,9 +71,8 @@ public class ProductService {
             spec = spec.and(ProductSpecifications.hasCategory(criteria.category().getCategoryId()));
         }
 
-//        if (criteria.dateAddedMin() != null && criteria.dateAddedMax() != null) {
-//            spec = spec.and(ProductSpecifications.inDateRange(criteria.dateAddedMin(), criteria.dateAddedMax()));
-//        }
+        // sorting
+        String sortBy = criteria.sortBy() == null ? "productId" : criteria.sortBy();
 
         if (pageNo < 0) {
             pageNo = 0;
@@ -85,14 +84,12 @@ public class ProductService {
 
 
 
-        String sortBy = criteria.sortDirection() == null ? "ASC" : criteria.sortDirection();
-        Sort sort = Sort.by(Sort.Direction.valueOf(sortBy), "productId");
+        String sortDirection = criteria.sortDirection() == null ? "DESC" : criteria.sortDirection();
+        Sort sort = Sort.by(Sort.Direction.valueOf(sortDirection), sortBy);
         Pageable paging = PageRequest.of(pageNo, pageSize, sort);
 
         Page<ProductEntity> page = productRepository.findAll(spec, paging);
-        PageResponse<ProductDto> response = new PageResponse<>(page.map(productMapper::toDto));
-
-        return response;
+        return new PageResponse<>(page.map(productMapper::toDto));
     }
 
     private void tokenValidation(ProductDto productDto, String token) {

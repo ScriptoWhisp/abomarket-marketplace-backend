@@ -17,12 +17,10 @@ public record ProductSearchCriteria(
         Integer quantityInStock,
         UserEntity seller,
         CategoryEntity category,
-        @Positive
-        Long dateAddedMin,
-        @Positive
-        Long dateAddedMax,
-        @Pattern(regexp = "ASC|DESC", flags = Pattern.Flag.CASE_INSENSITIVE)
+        @Pattern(regexp = "ASC|DESC")
         String sortDirection,
+        @Pattern(regexp = "price|name|productId")
+        String sortBy,
         String imageUrl
 ) {
 
