@@ -5,25 +5,21 @@ import ee.taltech.iti03022024project.domain.UserEntity;
 import jakarta.validation.constraints.*;
 
 
-import java.time.Instant;
-
 public record ProductSearchCriteria(
         @Positive
         Integer productId,
-        @NotEmpty
+        @Size(max = 255)
         String name,
         String description,
         @Positive
         Double price,
         @PositiveOrZero
         Integer quantityInStock,
-        @NotNull
         UserEntity seller,
-        @NotNull
         CategoryEntity category,
-        @NotNull
+        @Positive
         Long dateAddedMin,
-        @NotNull
+        @Positive
         Long dateAddedMax,
         @Pattern(regexp = "ASC|DESC", flags = Pattern.Flag.CASE_INSENSITIVE)
         String sortDirection,

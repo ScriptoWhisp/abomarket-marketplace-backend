@@ -75,6 +75,16 @@ public class ProductService {
 //            spec = spec.and(ProductSpecifications.inDateRange(criteria.dateAddedMin(), criteria.dateAddedMax()));
 //        }
 
+        if (pageNo < 0) {
+            pageNo = 0;
+        }
+
+        if (pageSize < 1) {
+            pageSize = 1;
+        }
+
+
+
         String sortBy = criteria.sortDirection() == null ? "ASC" : criteria.sortDirection();
         Sort sort = Sort.by(Sort.Direction.valueOf(sortBy), "productId");
         Pageable paging = PageRequest.of(pageNo, pageSize, sort);
