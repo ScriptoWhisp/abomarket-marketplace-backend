@@ -3,7 +3,6 @@ package ee.taltech.iti03022024project.specifications;
 import ee.taltech.iti03022024project.domain.ProductEntity;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.Instant;
 
 public class ProductSpecifications {
     public static Specification<ProductEntity> hasId(Integer id) {
@@ -54,10 +53,4 @@ public class ProductSpecifications {
                 categoryId == null ? null : criteriaBuilder.equal(root.get("category").get("id"), categoryId);
     }
 
-
-//    // idk if works
-//    public static Specification<ProductEntity> inDateRange(long start, long end) {
-//        return (root, query, criteriaBuilder) ->
-//                start == 0 && end == 0 ? null : criteriaBuilder.between(root.get("dateAdded"), Instant.ofEpochMilli(start), Instant.ofEpochMilli(end));
-//    }
 }

@@ -8,6 +8,7 @@ class Iti03022024ProjectApplicationTests {
 
     @Test
     void contextLoads() {
+        // No need to test this yet
     }
 
 }
