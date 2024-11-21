@@ -1,5 +1,69 @@
 # Iti0302 2024 Project (Working on title)
 
+## Project Idea
+
+An online marketplace web application where users can buy and sell products through fixed-price listings. Sellers can register to create product listings with descriptions, images, prices, and categories. Buyers can browse these listings, add items to a shopping cart, and make immediate purchases. The platform will support user authentication, product management and order processing.
+
+#### Key Features
+
+- **User Registration & Authentication:**
+  - Sellers and buyers can create accounts.
+  - Secure login and authentication mechanisms.
+- **Product Listings:**
+  - Sellers can create, edit, and delete product listings.
+  - Each listing includes descriptions, images, prices, and categories.
+- **Browsing & Searching:**
+  - Buyers can browse products by categories.
+  - Advanced search functionality to find specific items.
+- **Shopping Cart:**
+  - Buyers can add products to a shopping cart.
+  - Review and modify cart contents before purchase.
+- **Purchasing:**
+  - Immediate purchase options with secure payment processing.
+  - Order tracking and status updates.
+
+---
+
+## Technologies Used
+
+### Backend
+
+- **Java 21**
+- **Spring Boot**
+- **Gradle**
+- **Liquibase**
+
+### Frontend
+
+- **Vue.js**
+- **Tailwind CSS**
+
+### Database
+
+* **PostgreSQL**
+
+## CI/CD Setup
+
+### Overview
+
+The project utilizes **GitLab CI/CD** to automate the processes of building, testing, and deploying the application. The pipeline is defined in the `.gitlab-ci.yml` file and consists of three primary stages: **Build**, **Dockerize**, and **Deploy**.
+
+### Pipeline Stages
+
+1. **Build:**
+   - Uses `gradle:jdk21` to clean and build the project, generating a `.jar` file stored in `build/libs`.
+2. **Dockerize:**
+   - Uses `docker:dind` to build a Docker image, tags it with the commit SHA and `latest`, and pushes it to Docker Hub.
+3. **Deploy:**
+   - Connects to the remote server via SSH and deploys the application using `docker-compose` to start `docker-compose.yml`, which is already on the server. `docker-compose` pulls the latest Docker image from Docker Hub, runs the database, and then launches the application in containers.
+
+## Database Diagram
+
+https://dbdiagram.io/d/Crossover-WebProject-database-design-v1-66ffd865fb079c7ebd591f90
+
+
+
+
 ## How to Run the Application
 
 You can run the application in multiple ways: directly via Gradle, using Docker, or through an IDE like IntelliJ IDEA.
