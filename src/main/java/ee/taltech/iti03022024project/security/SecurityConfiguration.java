@@ -60,8 +60,13 @@ public class SecurityConfiguration {
                 })
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "api/users", "api/public/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "swagger-ui/*", "/v3/api-docs", "v3/api-docs/swagger-config").permitAll()
+                        // permit to /api/users/id for all
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/public/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtRequestFilter(key()), UsernamePasswordAuthenticationFilter.class)
                 .build();
