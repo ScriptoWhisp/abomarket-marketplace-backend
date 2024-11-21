@@ -14,7 +14,7 @@ public class ProductSpecifications {
 
     public static Specification<ProductEntity> hasName(String name) {
         return (root, query, criteriaBuilder) ->
-                name == null ? null : criteriaBuilder.equal(root.get("name"), name);
+                name == null ? null : criteriaBuilder.like(root.get("name"), "%" + name + "%");
     }
 
     public static Specification<ProductEntity> hasSubstringInDescription(String subString) {

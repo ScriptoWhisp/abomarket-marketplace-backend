@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +23,7 @@ public class ProductDto {
 
     @Schema(description = "Name of the product.", example = "Laptop")
     @NotEmpty
+    @Size(max = 255)
     private String name;
 
     @Schema(description = "Description of the product.", example = "A laptop for work.")
