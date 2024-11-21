@@ -70,27 +70,40 @@ public class ErrorHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-//    @ExceptionHandler(HandlerMethodValidationException.class)
-//    public ResponseEntity<Object> handleValidationException(HandlerMethodValidationException ex) {
-//        log.error("Validation error", ex);
-//
-//        String message = ex.getAllValidationResults()
-//                .iterator().next().getResolvableErrors()
-//                .iterator().next().getDefaultMessage();
-//        // Return ErrorResponse with message "Validation error" and status code 400
-//        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.BAD_REQUEST);
-//    }
-//
-//
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex) {
-//        log.error("Validation error", ex);
-//
-//        String message = ex.getBindingResult().getFieldErrors().stream()
-//                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-//                .findFirst()
-//                .orElse("Validation failed");
-//        // Return ErrorResponse with message "Validation error" and status code 400
-//        return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<Object> handleValidationException(HandlerMethodValidationException ex, WebRequest request) {
+        log.error("Validation error", ex);
+
+        String message = ex.getAllValidationResults()
+                .iterator().next().getResolvableErrors()
+                .iterator().next().getDefaultMessage();
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                message,
+                LocalDateTime.now(),
+                request.getDescription(false)
+        );
+        // Return ErrorResponse with message "Validation error" and status code 400
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex, WebRequest request) {
+        log.error("Validation error", ex);
+
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation failed");
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                message,
+                LocalDateTime.now(),
+                request.getDescription(false)
+        );
+
+        // Return ErrorResponse with message "Validation error" and status code 400
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 }
