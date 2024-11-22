@@ -21,6 +21,7 @@ public interface UserMapper {
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "unfinishedOrderId", target = "unfinishedOrder")
+    @Mapping(target = "createdAt", ignore = true)
     UserEntity toEntity(UserDto userDto);
 
     default OrderEntity mapUnfinishedOrderIdToOrderEntity(int orderId) {

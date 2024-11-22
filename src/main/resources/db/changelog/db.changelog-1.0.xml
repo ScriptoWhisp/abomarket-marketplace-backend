@@ -161,4 +161,20 @@
 
     </changeSet>
 
+    <changeSet id="2024-11-09 create column for product images" author="Viktor Dovbnia">
+        <addColumn tableName="products">
+            <column name="image_url" type="text">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2024-11-14 make category name not nullable" author="Alexander Smirnov">
+        <addNotNullConstraint tableName="categories" columnName="category_name"/>
+    </changeSet>
+
+    <changeSet id="2024-11-15 make status name not nullable" author="Alexander Smirnov">
+        <addNotNullConstraint tableName="statuses" columnName="status_name"/>
+    </changeSet>
+
 </databaseChangeLog>

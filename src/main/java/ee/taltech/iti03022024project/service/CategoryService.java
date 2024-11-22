@@ -1,16 +1,19 @@
 package ee.taltech.iti03022024project.service;
 
-import ee.taltech.iti03022024project.dto.CategoryDto;
-import ee.taltech.iti03022024project.mapstruct.CategoryMapper;
 import ee.taltech.iti03022024project.domain.CategoryEntity;
+import ee.taltech.iti03022024project.dto.CategoryDto;
+import ee.taltech.iti03022024project.exception.ObjectCreationException;
+import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
+import ee.taltech.iti03022024project.mapstruct.CategoryMapper;
 import ee.taltech.iti03022024project.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -23,28 +26,42 @@ public class CategoryService {
         return categoryRepository.findAll().stream().map(categoryMapper::toDto).toList();
     }
 
-    public Optional<CategoryDto> getCategoryById(int id) {
-        return categoryRepository.findById(id).map(categoryMapper::toDto);
+    public CategoryDto getCategoryById(int id) {
+        return categoryRepository.findById(id).map(categoryMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
     }
 
-    public Optional<CategoryDto> createCategory(CategoryDto categoryDto) {
-        CategoryEntity newCategory = categoryMapper.toEntity(categoryDto);
-        CategoryEntity savedCategory = categoryRepository.save(newCategory);
-        return Optional.of(categoryMapper.toDto(savedCategory));
+    public CategoryDto createCategory(CategoryDto categoryDto) {
+        try {
+            log.info("Attempting to create category with data: {}", categoryDto);
+            CategoryEntity newCategory = categoryMapper.toEntity(categoryDto);
+            CategoryEntity savedCategory = categoryRepository.save(newCategory);
+            log.info("Category created successfully: {}", savedCategory);
+            return categoryMapper.toDto(savedCategory);
+        } catch (Exception e) {
+            throw new ObjectCreationException("Failed to create category: " + e.getMessage());
+        }
     }
 
-    public Optional<CategoryDto> updateCategory(int id, CategoryDto categoryDto) {
-        Optional<CategoryEntity> categoryToUpdate = categoryRepository.findById(id);
-        categoryToUpdate.ifPresent(category -> {
-            category.setCategoryName(categoryDto.getName() != null ? categoryDto.getName() : category.getCategoryName());
-            categoryRepository.save(category);
-        });
-        return categoryToUpdate.map(categoryMapper::toDto);
+    public CategoryDto updateCategory(int id, CategoryDto categoryDto) {
+        log.info("Attempting to update category with id {}, with data: {}", id, categoryDto);
+        CategoryEntity categoryToUpdate = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
+        categoryToUpdate.setCategoryName(
+                categoryDto.getName() != null ? categoryDto.getName() : categoryToUpdate.getCategoryName());
+
+        CategoryEntity updatedCategory = categoryRepository.save(categoryToUpdate);
+
+        log.info("Category updated successfully: {}", updatedCategory);
+
+        return categoryMapper.toDto(updatedCategory);
     }
 
-    public Optional<CategoryDto> deleteCategory(int id) {
-        Optional<CategoryEntity> categoryToDelete = categoryRepository.findById(id);
-        categoryToDelete.ifPresent(categoryRepository::delete);
-        return categoryToDelete.map(categoryMapper::toDto);
+    public void deleteCategory(int id) {
+        log.info("Attempting to delete category with id {}", id);
+        CategoryEntity categoryToDelete = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
+        categoryRepository.delete(categoryToDelete);
+        log.info("Category deleted successfully: {}", categoryToDelete);
     }
 }
