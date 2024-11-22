@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class OrderController {
     @Operation(summary = "Create order", description = "Creates a new order and returns it.")
     @ApiResponse(responseCode = "200", description = "Order created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)))
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) {
+    public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody OrderDto orderDto) {
         log.info("Received request to create order: {}", orderDto);
         OrderDto createdOrder = orderService.createOrder(orderDto);
         log.info("Order created successfully: {}", createdOrder);
@@ -53,7 +54,7 @@ public class OrderController {
     @ApiResponse(responseCode = "200", description = "Order updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)))
     @ApiResponse(responseCode = "404", description = "Order not found.", content = @Content())
     @PatchMapping("/{id}")
-    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable int id, @RequestBody OrderDto orderDto) {
+    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable int id, @Valid @RequestBody OrderDto orderDto) {
         log.info("Received request to update status of order with id {}, with data: {}", id, orderDto);
         OrderDto updatedOrder = orderService.updateOrder(id, orderDto);
         log.info("Order updated successfully: {}", updatedOrder);

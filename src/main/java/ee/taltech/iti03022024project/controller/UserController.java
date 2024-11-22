@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class UserController {
     @Operation(summary = "Patch authorized user", description = "Patcher authorized user's information and returns updated info.")
     @ApiResponse(responseCode = "200", description = "User updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     @PatchMapping("/profile")
-    public ResponseEntity<UserDto> patchAuthorizedUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> patchAuthorizedUser(@Valid @RequestBody UserDto userDto) {
         log.info("Received request to update authorized user with data: {}", userDto);
         UserDto updatedUser = userService.patchAuthorizedUser(userDto);
         log.info("Authorized user updated successfully: {}", updatedUser);
@@ -67,7 +68,7 @@ public class UserController {
     @Operation(summary = "Create user", description = "Creates a new user with the given information.")
     @ApiResponse(responseCode = "200", description = "User created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         log.info("Received request to create user: {}", userDto);
         UserDto createdUser = userService.createUser(userDto);
         log.info("User created successfully: {}", createdUser);
@@ -78,7 +79,7 @@ public class UserController {
     @ApiResponse(responseCode = "204", description = "User deleted successfully.")
     @ApiResponse(responseCode = "404", description = "User not found.", content = @Content())
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+    public ResponseEntity<Void> deleteUser(@Valid @PathVariable int id) {
         log.info("Received request to delete user with id {}", id);
         userService.deleteUser(id);
         log.info("User deleted successfully: {}", id);

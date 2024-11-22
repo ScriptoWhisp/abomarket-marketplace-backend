@@ -31,7 +31,7 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
     public LoginResponseDto login(LoginRequestDto request) {
-        log.info("Attempting to login : {}", request);
+        log.info("Attempting to login : {}", request.getEmail());
         UserEntity user = usersRepository
                 .findByEmail(request.getEmail())
                 .orElseThrow(() -> new LoginException("User Not Found!"));
@@ -47,7 +47,7 @@ public class LoginService {
 
     private String generateToken(UserEntity user) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .subject(user.getEmail())
                 .claims(Map.of(
                         "userId", user.getUserId()
                 ))
