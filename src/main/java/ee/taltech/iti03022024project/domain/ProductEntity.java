@@ -10,15 +10,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
 @Schema(hidden = true)
-@Getter
-@Setter
-@Data
+@ToString
+@Getter @Setter
 @Entity(name = "products")
 public class ProductEntity {
 

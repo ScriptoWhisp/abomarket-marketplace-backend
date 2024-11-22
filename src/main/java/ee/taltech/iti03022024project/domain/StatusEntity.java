@@ -8,13 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Data;
+import lombok.ToString;
 
 
 @Schema(hidden = true)
-@Getter
-@Setter
-@Data
+@ToString
+@Getter @Setter
 @Entity(name = "statuses")
 public class StatusEntity {
 

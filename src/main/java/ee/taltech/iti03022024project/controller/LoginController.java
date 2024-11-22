@@ -27,7 +27,7 @@ public class LoginController {
     @ApiResponse(responseCode = "401", description = "User with this does not exist in database or password is invalid.", content = @Content())
     @PostMapping("/api/public/login")
     public LoginResponseDto login(@RequestBody LoginRequestDto request) {
-        log.info("Received login request: {}", request);
+        log.info("Received login request: {}", request.getEmail());
         return loginService.login(request);
     }
 }
