@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ public class StatusController {
     @Operation(summary = "Create status", description = "Creates a new status and returns it.")
     @ApiResponse(responseCode = "200", description = "Status created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StatusDto.class)))
     @PostMapping
-    public ResponseEntity<StatusDto> createStatus(@RequestBody StatusDto statusDto) {
+    public ResponseEntity<StatusDto> createStatus(@Valid @RequestBody StatusDto statusDto) {
         log.info("Received request to create status: {}", statusDto);
         StatusDto createdStatus = statusService.createStatus(statusDto);
         log.info("Status created successfully: {}", createdStatus);
@@ -52,7 +53,7 @@ public class StatusController {
     @Operation(summary = "Update status", description = "Updates status with the specified id and returns it.")
     @ApiResponse(responseCode = "200", description = "Status updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StatusDto.class)))
     @ApiResponse(responseCode = "404", description = "Status not found.", content = @Content())
-    public ResponseEntity<StatusDto> updateStatus(@PathVariable int id, @RequestBody StatusDto statusDto) {
+    public ResponseEntity<StatusDto> updateStatus(@PathVariable int id, @Valid @RequestBody StatusDto statusDto) {
         log.info("Received request to update status with id {}, with data: {}", id,  statusDto);
         StatusDto updatedStatus = statusService.updateStatus(id, statusDto);
         log.info("Status updated successfully: {}", updatedStatus);

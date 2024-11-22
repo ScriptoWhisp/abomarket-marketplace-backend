@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class CategoryController {
     @ApiResponse(responseCode = "200", description = "Category updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryDto.class)))
     @ApiResponse(responseCode = "404", description = "Category not found.", content = @Content())
     @PatchMapping("/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable int id, @RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable int id, @Valid @RequestBody CategoryDto categoryDto) {
         log.info("Received request to update category with id {}, with data: {}", id, categoryDto);
         CategoryDto updatedCategory = categoryService.updateCategory(id, categoryDto);
         log.info("Category updated successfully: {}", categoryDto);
