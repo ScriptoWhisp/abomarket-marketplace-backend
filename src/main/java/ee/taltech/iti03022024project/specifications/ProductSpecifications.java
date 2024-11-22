@@ -13,7 +13,7 @@ public class ProductSpecifications {
 
     public static Specification<ProductEntity> hasName(String name) {
         return (root, query, criteriaBuilder) ->
-                name == null ? null : criteriaBuilder.like(root.get("name"), "%" + name + "%");
+                name == null ? null : criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
     }
 
     public static Specification<ProductEntity> hasSubstringInDescription(String subString) {
