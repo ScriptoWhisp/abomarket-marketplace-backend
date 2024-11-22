@@ -39,6 +39,8 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final UsersRepository usersRepository;
 
+    private static final String NOT_FOUND_MSG = "Product with id %s not found";
+
     public PageResponse<ProductDto> getProducts(ProductSearchCriteria criteria, int pageNo, int pageSize) {
         // criteria
         Specification<ProductEntity> spec = Specification.where(null);
@@ -112,7 +114,7 @@ public class ProductService {
 
     public ProductDto getProductById(int id) {
         return productRepository.findById(id).map(productMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
     }
 
     public PageResponse<ProductDto> getProductsByUserId(int id, int pageNo, int pageSize) {
@@ -145,7 +147,7 @@ public class ProductService {
         log.info("Attempting to update product with id {}, with data: {}", id, productDto);
 
         ProductEntity productToUpdate = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
 
         if (productDto.getName() != null) {
             productToUpdate.setName(productDto.getName());
@@ -182,7 +184,7 @@ public class ProductService {
     public void deleteProduct(int id, String token) {
         log.info("Attempting to delete product with id {}", id);
         ProductEntity productToDelete = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
 
         tokenValidation(productMapper.toDto(productToDelete), token);
 

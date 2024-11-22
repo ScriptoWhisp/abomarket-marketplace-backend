@@ -3,8 +3,11 @@ package ee.taltech.iti03022024project.specifications;
 import ee.taltech.iti03022024project.domain.ProductEntity;
 import org.springframework.data.jpa.domain.Specification;
 
-
 public class ProductSpecifications {
+
+    private ProductSpecifications() {
+    }
+
     public static Specification<ProductEntity> hasId(Integer id) {
         return (root, query, criteriaBuilder) ->
                 id == null ? null : criteriaBuilder.equal(root.get("id"), id);

@@ -9,5 +9,5 @@ import lombok.Data;
 @Data
 public class LoginResponseDto {
     @Schema(description = "JWT token", example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0In0.")
-    private String JWTToken;
+    private String jwtToken;
 }
