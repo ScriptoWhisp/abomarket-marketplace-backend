@@ -25,6 +25,8 @@ public class OrderService {
     private final StatusRepository statusRepository;
     private final OrderMapper orderMapper;
 
+    private static final String NOT_FOUND_MSG = "Order with id %s not found";
+
 
     public List<OrderDto> getOrders() {
         return orderRepository.findAll().stream().map(orderMapper::toDto).toList();
@@ -32,7 +34,7 @@ public class OrderService {
 
     public OrderDto getOrderById(int id) {
         return orderRepository.findById(id).map(orderMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Order with " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
     }
 
     public OrderDto createOrder(OrderDto orderDto) {
@@ -50,7 +52,7 @@ public class OrderService {
     public OrderDto updateOrder(int id, OrderDto orderDto) {
         log.info("Attempting to update order with id {}, with data: {}", id, orderDto);
         OrderEntity orderToUpdate = orderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Order with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
         StatusEntity newStatus = statusRepository.findById(orderDto.getStatusId())
                 .orElseThrow(() -> new ResourceNotFoundException("Status with id " + orderDto.getStatusId() + " not found"));
 
@@ -66,7 +68,7 @@ public class OrderService {
     public void deleteOrder(int id) {
         log.info("Attempting to delete order with id {}", id);
         OrderEntity orderToDelete = orderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Order with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
         orderRepository.delete(orderToDelete);
         log.info("Order deleted successfully: {}", orderToDelete);
 

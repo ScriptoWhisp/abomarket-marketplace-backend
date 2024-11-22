@@ -47,7 +47,7 @@ public class LoginService {
 
     private String generateToken(UserEntity user) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .subject(user.getEmail())
                 .claims(Map.of(
                         "userId", user.getUserId()
                 ))

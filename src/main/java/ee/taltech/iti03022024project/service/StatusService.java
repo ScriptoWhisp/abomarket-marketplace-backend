@@ -22,6 +22,8 @@ public class StatusService {
     private final StatusRepository statusRepository;
     private final StatusMapper statusMapper;
 
+    private static final String NOT_FOUND_MSG = "Status with id %s not found";
+
 
     public List<StatusDto> getStatuses() {
         return statusRepository.findAll().stream().map(statusMapper::toDto).toList();
@@ -29,7 +31,7 @@ public class StatusService {
 
     public StatusDto getStatusById(int id) {
         return statusRepository.findById(id).map(statusMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Status with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
     }
 
     public StatusDto createStatus(StatusDto statusDto) {
@@ -47,7 +49,7 @@ public class StatusService {
     public StatusDto updateStatus(int id, StatusDto statusDto) {
         log.info("Attempting to update status with id {}, with data: {}", id, statusDto);
         StatusEntity statusToUpdate = statusRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Status with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
 
         statusToUpdate.setStatusName(statusDto.getName() != null ? statusDto.getName() : statusToUpdate.getStatusName());
 
@@ -61,7 +63,7 @@ public class StatusService {
     public void deleteStatus(int id) {
         log.info("Attempting to delete status with id {}", id);
         StatusEntity statusToDelete = statusRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Status with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
         statusRepository.delete(statusToDelete);
         log.info("Status deleted successfully: {}", statusToDelete);
     }

@@ -22,13 +22,15 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
+    private static final String NOT_FOUND_MSG = "Category with id %s not found";
+
     public List<CategoryDto> getCategories() {
         return categoryRepository.findAll().stream().map(categoryMapper::toDto).toList();
     }
 
     public CategoryDto getCategoryById(int id) {
         return categoryRepository.findById(id).map(categoryMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
     }
 
     public CategoryDto createCategory(CategoryDto categoryDto) {
@@ -46,7 +48,7 @@ public class CategoryService {
     public CategoryDto updateCategory(int id, CategoryDto categoryDto) {
         log.info("Attempting to update category with id {}, with data: {}", id, categoryDto);
         CategoryEntity categoryToUpdate = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
         categoryToUpdate.setCategoryName(
                 categoryDto.getName() != null ? categoryDto.getName() : categoryToUpdate.getCategoryName());
 
@@ -60,7 +62,7 @@ public class CategoryService {
     public void deleteCategory(int id) {
         log.info("Attempting to delete category with id {}", id);
         CategoryEntity categoryToDelete = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
         categoryRepository.delete(categoryToDelete);
         log.info("Category deleted successfully: {}", categoryToDelete);
     }

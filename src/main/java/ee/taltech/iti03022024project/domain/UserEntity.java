@@ -39,7 +39,7 @@ public class UserEntity implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "unfinished_order", referencedColumnName = "order_id")
-    private OrderEntity unfinishedOrder;
+    private transient OrderEntity unfinishedOrder;
 
     @CreationTimestamp
     private Instant createdAt;
