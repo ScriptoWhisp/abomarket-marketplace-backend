@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class OrderItemController {
     @Operation(summary = "Create order item", description = "Creates a new order item and returns it.")
     @ApiResponse(responseCode = "200", description = "Order item created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDto.class)))
     @PostMapping
-    public ResponseEntity<OrderItemDto> createOrderItem(@RequestBody OrderItemDto orderItemDto) {
+    public ResponseEntity<OrderItemDto> createOrderItem(@Valid @RequestBody OrderItemDto orderItemDto) {
         log.info("Received request to create order: {}", orderItemDto);
         OrderItemDto createdOrderItem = orderItemService.createOrderItem(orderItemDto);
         log.info("OrderItem created successfully: {}", createdOrderItem);

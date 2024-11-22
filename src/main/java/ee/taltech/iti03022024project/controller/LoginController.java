@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +27,7 @@ public class LoginController {
     @ApiResponse(responseCode = "200", description = "User logged in successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponseDto.class)))
     @ApiResponse(responseCode = "401", description = "User with this does not exist in database or password is invalid.", content = @Content())
     @PostMapping("/api/public/login")
-    public LoginResponseDto login(@RequestBody LoginRequestDto request) {
+    public LoginResponseDto login(@Valid @RequestBody LoginRequestDto request) {
         log.info("Received login request: {}", request);
         return loginService.login(request);
     }
