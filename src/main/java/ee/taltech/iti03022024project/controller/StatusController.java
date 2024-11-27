@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
@@ -40,13 +41,14 @@ public class StatusController {
     }
 
     @Operation(summary = "Create status", description = "Creates a new status and returns it.")
-    @ApiResponse(responseCode = "200", description = "Status created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StatusDto.class)))
+    @ApiResponse(responseCode = "201", description = "Status created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StatusDto.class)))
     @PostMapping
     public ResponseEntity<StatusDto> createStatus(@Valid @RequestBody StatusDto statusDto) {
         log.info("Received request to create status: {}", statusDto);
         StatusDto createdStatus = statusService.createStatus(statusDto);
         log.info("Status created successfully: {}", createdStatus);
-        return ResponseEntity.ok(createdStatus);
+        int id = createdStatus.getId();
+        return ResponseEntity.created(URI.create(String.format("/api/statuses/%s", id))).body(createdStatus);
     }
 
     @PatchMapping("/{id}")

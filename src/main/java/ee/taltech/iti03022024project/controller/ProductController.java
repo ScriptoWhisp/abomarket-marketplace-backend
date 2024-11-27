@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -53,14 +55,15 @@ public class ProductController {
     }
 
     @Operation(summary = "Create product", description = "Creates a new product and returns it.")
-    @ApiResponse(responseCode = "200", description = "Product created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class)))
+    @ApiResponse(responseCode = "201", description = "Product created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class)))
     @ApiResponse(responseCode = "403", description = "Bad token.", content = @Content())
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto, @RequestHeader("Authorization") String token) {
         log.info("Received request to create product: {}", productDto);
         ProductDto createdProduct = productService.createProduct(productDto, token);
         log.info("Product created successfully: {}", createdProduct);
-        return ResponseEntity.ok(createdProduct);
+        int id = createdProduct.getId();
+        return ResponseEntity.created(URI.create(String.format("/api/products/%s", id))).body(createdProduct);
     }
 
     @Operation(summary = "Update product", description = "Updates product with the specified id and returns it.")
