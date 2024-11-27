@@ -2,7 +2,10 @@ package ee.taltech.iti03022024project.criteria;
 
 import ee.taltech.iti03022024project.domain.CategoryEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 
 public record ProductSearchCriteria(

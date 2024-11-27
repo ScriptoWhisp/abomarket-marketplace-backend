@@ -1,7 +1,7 @@
 package ee.taltech.iti03022024project.mapstruct;
 
-import ee.taltech.iti03022024project.dto.StatusDto;
 import ee.taltech.iti03022024project.domain.StatusEntity;
+import ee.taltech.iti03022024project.dto.StatusDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

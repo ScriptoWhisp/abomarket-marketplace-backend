@@ -4,6 +4,8 @@
 
 An online marketplace web application where users can buy and sell products through fixed-price listings. Sellers can register to create product listings with descriptions, images, prices, and categories. Buyers can browse these listings, add items to a shopping cart, and make immediate purchases. The platform will support user authentication, product management and order processing.
 
+This is the backend part of the project. To start the whole application first read instructions, setup and start the frontend part [iti0302-2024-frontend](https://gitlab.cs.ttu.ee/datjul/iti0302-2024-frontend)
+
 #### Key Features
 
 - **User Registration & Authentication:**
@@ -29,18 +31,34 @@ An online marketplace web application where users can buy and sell products thro
 ### Backend
 
 - **Java 21**
-- **Spring Boot**
 - **Gradle**
+- **Spring Boot**
+#### Libraries
 - **Liquibase**
+- **MapStruct**
+- **Spring Security**
+- **JSON Web Tokens (JJWT)**
+- **Swagger-ui (OpenAPI)**
+- **Validation**
+- **Lombok**
 
 ### Frontend
 
+- **Node.js**
 - **Vue.js**
 - **Tailwind CSS**
 
 ### Database
 
-* **PostgreSQL**
+- **PostgreSQL**
+
+## Requirements (For backend)
+
+- **Java 21**
+- **Docker**
+- **Docker Compose**
+- **PostgreSQL**
+- **Gradle** (Used to install dependencies and build the project)
 
 ## CI/CD Setup
 
@@ -126,7 +144,9 @@ Build the Docker Image using the Dockerfile from the directory:
 
 Run the Application Container:
 
-2. Change docker-compose.yml as follows:
+2. Change docker-compose.yml as follows
+
+> NOTE: change /path/to/application.properties to the path of your application.properties file:
 
 ```bash
 version: "3.7"

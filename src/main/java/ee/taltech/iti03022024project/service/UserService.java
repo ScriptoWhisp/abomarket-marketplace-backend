@@ -4,7 +4,6 @@ package ee.taltech.iti03022024project.service;
 import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.exception.BadTokenException;
-import ee.taltech.iti03022024project.exception.LoginException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
