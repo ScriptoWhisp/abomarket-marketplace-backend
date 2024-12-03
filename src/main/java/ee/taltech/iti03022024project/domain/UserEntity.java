@@ -39,7 +39,8 @@ public class UserEntity implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "unfinished_order", referencedColumnName = "order_id")
-    private transient OrderEntity unfinishedOrder;
+    @SuppressWarnings("java:S1948")
+    private OrderEntity unfinishedOrder;
 
     @CreationTimestamp
     private Instant createdAt;
