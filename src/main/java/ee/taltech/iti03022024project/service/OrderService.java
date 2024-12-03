@@ -2,6 +2,7 @@ package ee.taltech.iti03022024project.service;
 
 import ee.taltech.iti03022024project.domain.OrderEntity;
 import ee.taltech.iti03022024project.domain.StatusEntity;
+import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.dto.OrderDto;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
@@ -47,6 +48,22 @@ public class OrderService {
         } catch (Exception e) {
             throw new ObjectCreationException("Failed to create order: " + e.getMessage());
         }
+    }
+
+    // This method returns OrderEntity as it must be only used in UserService, thus not facing controller
+    public OrderEntity createUnfinishedOrderForUser(UserEntity userEntity) {
+        try {
+            log.info("Attempting to create cart for user {}", userEntity);
+            OrderEntity orderEntity = new OrderEntity();
+            orderEntity.setUser(userEntity);
+            orderEntity.setStatus(statusRepository.getReferenceById(0));  // cart status has id of 0
+            log.info("Trying to save cart {}", orderEntity);
+            return orderRepository.save(orderEntity);
+        } catch (Exception e) {
+            throw new ObjectCreationException("Failed to create cart: " + e.getMessage());
+        }
+
+
     }
 
     public OrderDto updateOrder(int id, OrderDto orderDto) {
