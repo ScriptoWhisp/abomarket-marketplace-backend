@@ -67,6 +67,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/public/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtRequestFilter(key()), UsernamePasswordAuthenticationFilter.class)
                 .build();

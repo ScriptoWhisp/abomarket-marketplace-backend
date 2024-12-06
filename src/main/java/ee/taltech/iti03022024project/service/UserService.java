@@ -2,12 +2,14 @@ package ee.taltech.iti03022024project.service;
 
 
 import ee.taltech.iti03022024project.domain.OrderEntity;
+import ee.taltech.iti03022024project.domain.RoleEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.exception.BadTokenException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
+import ee.taltech.iti03022024project.repository.RolesRepository;
 import ee.taltech.iti03022024project.repository.UsersRepository;
 import ee.taltech.iti03022024project.security.AuthenticationFacade;
 import jakarta.transaction.Transactional;
@@ -25,6 +27,7 @@ import java.util.List;
 public class UserService {
 
     private final UsersRepository usersRepository;
+    private final RolesRepository rolesRepository;
     private final UserMapper userMapper;
 
     private final OrderService orderService;
@@ -82,6 +85,9 @@ public class UserService {
             }
             UserEntity newUser = userMapper.toEntity(userDto);
             newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+            RoleEntity defaultRole = rolesRepository.getReferenceById(1);
+            newUser.setRole(defaultRole); // set default role
 
             // save user to give him unique id
             UserEntity newUserWithId = usersRepository.save(newUser);
