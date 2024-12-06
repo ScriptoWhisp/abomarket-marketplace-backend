@@ -177,4 +177,11 @@
         <addNotNullConstraint tableName="statuses" columnName="status_name"/>
     </changeSet>
 
+    <changeSet id="2024-12-03 create status for carts" author="Viktor Dovbnia">
+        <insert tableName="statuses">
+            <column name="status_id">0</column>
+            <column name="status_name">CART</column>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>

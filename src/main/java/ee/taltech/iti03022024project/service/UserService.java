@@ -1,10 +1,10 @@
 package ee.taltech.iti03022024project.service;
 
 
+import ee.taltech.iti03022024project.domain.OrderEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.exception.BadTokenException;
-import ee.taltech.iti03022024project.exception.LoginException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
@@ -26,6 +26,8 @@ public class UserService {
 
     private final UsersRepository usersRepository;
     private final UserMapper userMapper;
+
+    private final OrderService orderService;
 
     private final AuthenticationFacade authenticationFacade;
     private final PasswordEncoder passwordEncoder;
@@ -80,8 +82,16 @@ public class UserService {
             }
             UserEntity newUser = userMapper.toEntity(userDto);
             newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            UserEntity savedUser = usersRepository.save(newUser);
-            log.info("User created successfully: {}", newUser);
+
+            // save user to give him unique id
+            UserEntity newUserWithId = usersRepository.save(newUser);
+
+            // create a cart for user
+            OrderEntity userUnfinishedOrder = orderService.createUnfinishedOrderForUser(newUserWithId);
+            newUserWithId.setUnfinishedOrder(userUnfinishedOrder);
+
+            UserEntity savedUser = usersRepository.save(newUserWithId);
+            log.info("User created successfully: {}", savedUser);
             return userMapper.toDto(savedUser);
         } catch (Exception e) {
             throw new BadTokenException("Failed to create user: " + e.getMessage());
