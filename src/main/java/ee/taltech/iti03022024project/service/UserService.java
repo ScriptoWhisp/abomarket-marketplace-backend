@@ -8,6 +8,7 @@ import ee.taltech.iti03022024project.exception.BadTokenException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
+import ee.taltech.iti03022024project.repository.OrderRepository;
 import ee.taltech.iti03022024project.repository.UsersRepository;
 import ee.taltech.iti03022024project.security.AuthenticationFacade;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,7 @@ public class UserService {
     private final UserMapper userMapper;
 
     private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
     private final AuthenticationFacade authenticationFacade;
     private final PasswordEncoder passwordEncoder;
@@ -69,6 +71,7 @@ public class UserService {
         userToUpdate.setPassword(userDto.getPassword() != null ? userDto.getPassword() : userToUpdate.getPassword());
         userToUpdate.setPhone(userDto.getPhone() != null ? userDto.getPhone() : userToUpdate.getPhone());
         userToUpdate.setLocation(userDto.getLocation() != null ? userDto.getLocation() : userToUpdate.getLocation());
+        userToUpdate.setUnfinishedOrder(userDto.getUnfinishedOrderId() != null ? orderRepository.getReferenceById(userDto.getUnfinishedOrderId()) : userToUpdate.getUnfinishedOrder());
         usersRepository.save(userToUpdate);
         log.info("User updated successfully: {}", userToUpdate);
         return userMapper.toDto(userToUpdate);
