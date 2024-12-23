@@ -1,6 +1,7 @@
 package ee.taltech.iti03022024project.controller;
 
 import ee.taltech.iti03022024project.dto.StatusDto;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.service.StatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -24,11 +25,14 @@ public class StatusController {
     private final StatusService statusService;
 
 
-    @Operation(summary = "Get all statuses", description = "Returns a list of all statuses recorded in the database.")
-    @ApiResponse(responseCode = "200", description = "List of statuses returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = StatusDto.class))))
+    @Operation(summary = "Get all statuses", description = "Returns a page of statuses with the specified search, page number and page size.")
+    @ApiResponse(responseCode = "200", description = "List of statuses returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
-    public List<StatusDto> getStatuses() {
-        return statusService.getStatuses();
+    public ResponseEntity<PageResponse<StatusDto>> getStatuses(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "5") int pageSize) {
+        return ResponseEntity.ok(statusService.getStatuses(search, pageNo, pageSize));
     }
 
     @Operation(summary = "Get status by id", description = "Returns a status with the specified id (non-negative integer).")
