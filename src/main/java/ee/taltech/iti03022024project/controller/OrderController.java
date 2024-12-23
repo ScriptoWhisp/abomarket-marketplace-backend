@@ -25,15 +25,15 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @Operation(summary = "Get all orders", description = "Returns a list of all orders recorded in the database.")
-    @ApiResponse(responseCode = "200", description = "List of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderDto.class))))
+    @Operation(summary = "Get all orders", description = "Returns a page of orders with the specified criteria, page number and page size.")
+    @ApiResponse(responseCode = "200", description = "List of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
-    public PageResponse<OrderDto> getOrders(
+    public ResponseEntity<PageResponse<OrderDto>> getOrders(
             @Valid @ModelAttribute OrderSearchCriteria criteria,
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "5") int pageSize
     ) {
-        return orderService.getOrders(criteria, pageNo, pageSize);
+        return ResponseEntity.ok(orderService.getOrders(criteria, pageNo, pageSize));
     }
 
     @Operation(summary = "Get order by id", description = "Returns an order with the specified id (non-negative integer).")
