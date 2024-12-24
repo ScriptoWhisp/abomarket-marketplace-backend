@@ -71,6 +71,12 @@ public class UserService {
         }
     }
 
+    public UserDto patchUserById(int id, UserDto userDto) {
+        UserEntity userToUpdate = usersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+        return updateUser(userToUpdate, userDto);
+    }
+
     private UserDto updateUser(UserEntity userToUpdate, UserDto userDto) {
         log.info("Attempting to update user with id {}, with data:{}", userToUpdate.getUserId(), userDto);
         userToUpdate.setFirstName(userDto.getFirstName() != null ? userDto.getFirstName() : userToUpdate.getFirstName());

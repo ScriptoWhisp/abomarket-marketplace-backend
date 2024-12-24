@@ -69,6 +69,16 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @Operation(summary = "Patch user", description = "Patcher user's information and returns updated info, should be only possible to admins.")
+    @ApiResponse(responseCode = "200", description = "User updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserDto> patchUserById(@PathVariable int id, @Valid @RequestBody UserDto userDto) {
+        log.info("Received request by admin to update user with data: {}", userDto);
+        UserDto updatedUser = userService.patchUserById(id, userDto);
+        log.info("User updated successfully: {}", updatedUser);
+        return ResponseEntity.ok(updatedUser);
+    }
+
 
     @Operation(summary = "Create user", description = "Creates a new user with the given information.")
     @ApiResponse(responseCode = "200", description = "User created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
