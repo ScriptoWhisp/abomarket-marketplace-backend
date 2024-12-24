@@ -184,4 +184,38 @@
         </insert>
     </changeSet>
 
+    <changeSet id="2024-12-06 create table for roles" author="Daniel Tjuinov">
+        <createTable tableName="roles">
+            <column name="role_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role_name" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <insert tableName="roles">
+            <column name="role_name">USER</column>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="role_name">ADMIN</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2024-12-06 add role to users" author="Daniel Tjuinov">
+        <addColumn tableName="users">
+            <column defaultValue="1" name="role_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="users"
+                                 baseColumnNames="role_id"
+                                 constraintName="role_id_to_roles"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="role_id"
+        />
+    </changeSet>
+
 </databaseChangeLog>

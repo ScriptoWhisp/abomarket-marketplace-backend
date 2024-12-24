@@ -1,6 +1,7 @@
 package ee.taltech.iti03022024project.controller;
 
 import ee.taltech.iti03022024project.dto.CategoryDto;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,10 +27,14 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @Operation(summary = "Get all categories", description = "Returns a list of all categories recorded in the database.")
-    @ApiResponse(responseCode = "200", description = "List of categories returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CategoryDto.class))))
+    @ApiResponse(responseCode = "200", description = "List of categories returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
-    public List<CategoryDto> getCategories() {
-        return categoryService.getCategories();
+    public ResponseEntity<PageResponse<CategoryDto>> getCategories(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "5") int pageSize
+    ) {
+        return ResponseEntity.ok(categoryService.getCategories(search, pageNo, pageSize));
     }
 
     @Operation(summary = "Get category by id", description = "Returns a category with the specified id (non-negative integer).")

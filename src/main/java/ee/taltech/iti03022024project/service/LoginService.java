@@ -49,7 +49,8 @@ public class LoginService {
         return Jwts.builder()
                 .subject(user.getEmail())
                 .claims(Map.of(
-                        "userId", user.getUserId()
+                        "userId", user.getUserId(),
+                        "roles", user.getAuthorities()
                 ))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))

@@ -29,6 +29,9 @@ import javax.crypto.SecretKey;
 @AllArgsConstructor
 public class SecurityConfiguration {
 
+    public static final String API_CATEGORIES = "/api/categories/";
+    public static final String API_STATUSES = "/api/statuses/";
+    public static final String ADMIN = "ADMIN";
     private final UsersRepository usersRepository;
 
 
@@ -67,6 +70,13 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/public/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, API_CATEGORIES).hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.POST, API_CATEGORIES).hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.PATCH, API_CATEGORIES).hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, API_STATUSES).hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.POST, API_STATUSES).hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.PATCH, API_STATUSES).hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/api/users").hasRole(ADMIN)
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtRequestFilter(key()), UsernamePasswordAuthenticationFilter.class)
                 .build();

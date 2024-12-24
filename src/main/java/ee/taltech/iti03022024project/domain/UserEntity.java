@@ -1,13 +1,7 @@
 package ee.taltech.iti03022024project.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,6 +32,11 @@ public class UserEntity implements UserDetails {
     private String location;
 
     @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    @SuppressWarnings("java:S1948")
+    private RoleEntity role;
+
+    @ManyToOne
     @JoinColumn(name = "unfinished_order", referencedColumnName = "order_id")
     @SuppressWarnings("java:S1948")
     private OrderEntity unfinishedOrder;
@@ -45,14 +44,13 @@ public class UserEntity implements UserDetails {
     @CreationTimestamp
     private Instant createdAt;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return email;
     }
 }

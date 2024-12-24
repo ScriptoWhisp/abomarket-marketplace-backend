@@ -2,17 +2,23 @@ package ee.taltech.iti03022024project.service;
 
 
 import ee.taltech.iti03022024project.domain.OrderEntity;
+import ee.taltech.iti03022024project.domain.RoleEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.exception.BadTokenException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
+import ee.taltech.iti03022024project.repository.RolesRepository;
 import ee.taltech.iti03022024project.repository.UsersRepository;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.security.AuthenticationFacade;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +31,7 @@ import java.util.List;
 public class UserService {
 
     private final UsersRepository usersRepository;
+    private final RolesRepository rolesRepository;
     private final UserMapper userMapper;
 
     private final OrderService orderService;
@@ -32,8 +39,11 @@ public class UserService {
     private final AuthenticationFacade authenticationFacade;
     private final PasswordEncoder passwordEncoder;
 
-    public List<UserDto> getUsers() {
-        return usersRepository.findAll().stream().map(userMapper::toDto).toList();
+    public PageResponse<UserDto> getUsers(String search, int pageNo, int pageSize) {
+        log.info("Attempting to get users with search: {}, page: {}, size: {}", search, pageNo, pageSize);
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        Page<UserEntity> users = usersRepository.findAllByEmailContaining(search, paging);
+        return new PageResponse<>(users.map(userMapper::toDto));
     }
 
     public UserDto getUserById(int id) {
@@ -61,6 +71,12 @@ public class UserService {
         }
     }
 
+    public UserDto patchUserById(int id, UserDto userDto) {
+        UserEntity userToUpdate = usersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+        return updateUser(userToUpdate, userDto);
+    }
+
     private UserDto updateUser(UserEntity userToUpdate, UserDto userDto) {
         log.info("Attempting to update user with id {}, with data:{}", userToUpdate.getUserId(), userDto);
         userToUpdate.setFirstName(userDto.getFirstName() != null ? userDto.getFirstName() : userToUpdate.getFirstName());
@@ -82,6 +98,9 @@ public class UserService {
             }
             UserEntity newUser = userMapper.toEntity(userDto);
             newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+            RoleEntity defaultRole = rolesRepository.getReferenceById(1);
+            newUser.setRole(defaultRole); // set default role
 
             // save user to give him unique id
             UserEntity newUserWithId = usersRepository.save(newUser);

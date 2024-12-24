@@ -1,6 +1,8 @@
 package ee.taltech.iti03022024project.controller;
 
+import ee.taltech.iti03022024project.criteria.OrderSearchCriteria;
 import ee.taltech.iti03022024project.dto.OrderDto;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -25,11 +25,15 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @Operation(summary = "Get all orders", description = "Returns a list of all orders recorded in the database.")
-    @ApiResponse(responseCode = "200", description = "List of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderDto.class))))
+    @Operation(summary = "Get all orders", description = "Returns a page of orders with the specified criteria, page number and page size.")
+    @ApiResponse(responseCode = "200", description = "List of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
-    public List<OrderDto> getOrders() {
-        return orderService.getOrders();
+    public ResponseEntity<PageResponse<OrderDto>> getOrders(
+            @Valid @ModelAttribute OrderSearchCriteria criteria,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "5") int pageSize
+    ) {
+        return ResponseEntity.ok(orderService.getOrders(criteria, pageNo, pageSize));
     }
 
     @Operation(summary = "Get order by id", description = "Returns an order with the specified id (non-negative integer).")

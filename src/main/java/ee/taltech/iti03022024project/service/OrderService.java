@@ -1,5 +1,6 @@
 package ee.taltech.iti03022024project.service;
 
+import ee.taltech.iti03022024project.criteria.OrderSearchCriteria;
 import ee.taltech.iti03022024project.domain.OrderEntity;
 import ee.taltech.iti03022024project.domain.StatusEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
@@ -9,12 +10,16 @@ import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.OrderMapper;
 import ee.taltech.iti03022024project.repository.OrderRepository;
 import ee.taltech.iti03022024project.repository.StatusRepository;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @Slf4j
 @Service
@@ -29,8 +34,35 @@ public class OrderService {
     private static final String NOT_FOUND_MSG = "Order with id %s not found";
 
 
-    public List<OrderDto> getOrders() {
-        return orderRepository.findAll().stream().map(orderMapper::toDto).toList();
+    public PageResponse<OrderDto> getOrders(OrderSearchCriteria criteria, int pageNo, int pageSize) {
+
+        Specification<OrderEntity> spec = Specification.where(null);
+
+        if (criteria.id() != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), criteria.id()));
+        }
+
+        if (criteria.userId() != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user").get("userId"), criteria.userId()));
+        }
+
+        if (criteria.statusId() != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status").get("statusId"), criteria.statusId()));
+        }
+
+        if (pageNo < 0) {
+            pageNo = 0;
+        }
+
+        if (pageSize < 1) {
+            pageSize = 1;
+        }
+
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+
+        Page<OrderEntity> page = orderRepository.findAll(spec, paging);
+        return new PageResponse<>(page.map(orderMapper::toDto));
+
     }
 
     public OrderDto getOrderById(int id) {
@@ -42,6 +74,12 @@ public class OrderService {
         try {
             log.info("Attempting to create order with data: {}", orderDto);
             OrderEntity newOrder = orderMapper.toEntity(orderDto);
+
+            // fetch status from db to avoid detached entity exception
+            StatusEntity status = statusRepository.findById(orderDto.getStatusId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Status with id " + orderDto.getStatusId() + " not found"));
+            newOrder.setStatus(status);
+
             OrderEntity savedOrder = orderRepository.save(newOrder);
             log.info("Order created successfully: {}", savedOrder);
             return orderMapper.toDto(savedOrder);
