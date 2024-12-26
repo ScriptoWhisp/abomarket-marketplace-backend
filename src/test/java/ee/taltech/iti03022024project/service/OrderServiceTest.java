@@ -11,7 +11,6 @@ import ee.taltech.iti03022024project.mapstruct.OrderMapper;
 import ee.taltech.iti03022024project.repository.OrderRepository;
 import ee.taltech.iti03022024project.repository.StatusRepository;
 import ee.taltech.iti03022024project.responses.PageResponse;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
