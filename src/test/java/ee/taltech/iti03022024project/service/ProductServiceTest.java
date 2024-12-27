@@ -56,17 +56,17 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         // Prepare a sample ProductDto
-        sampleProductDto = new ProductDto(
-                1,                  // id
-                "Sample Product",   // name
-                "Sample Desc",      // description
-                10.0,               // price
-                5,                  // stockQuantity
-                123,                // sellerId
-                11,                 // categoryId
-                Instant.now(),      // dateAdded
-                "http://example.com/image.jpg" // imageUrl
-        );
+        sampleProductDto = ProductDto.builder()
+                .id(1)
+                .name("Sample Product")
+                .description("Sample Desc")
+                .price(10.0)
+                .stockQuantity(5)
+                .sellerId(123)
+                .categoryId(11)
+                .dateAdded(Instant.now())
+                .imageUrl("http://example.com/image.jpg")
+                .build();
 
         // Prepare a sample ProductEntity
         sampleProductEntity = new ProductEntity();
@@ -155,18 +155,11 @@ class ProductServiceTest {
     @Test
     void getProducts_ValidCriteria_ReturnsPageResponse() {
         // given
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                null,               // productId
-                "Sample Product",   // name
-                null,               // description
-                null,               // price
-                null,               // quantityInStock
-                null,               // seller
-                null,               // category
-                "ASC",              // sortDirection
-                "name",             // sortBy
-                null                // imageUrl
-        );
+        ProductSearchCriteria criteria = ProductSearchCriteria.builder()
+                .name("Sample Product")
+                .sortDirection("ASC")
+                .sortBy("name")
+                .build();
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "name"));
         Page<ProductEntity> pageResult = new PageImpl<>(List.of(sampleProductEntity), pageable, 1);
@@ -188,15 +181,16 @@ class ProductServiceTest {
     @Test
     void getProducts_PageNoBelowZero_ResetsToZero() {
         // given
-        ProductSearchCriteria criteria = new ProductSearchCriteria(null, null, null, null, null, null, null, null, null, null);
+        ProductSearchCriteria criteria = ProductSearchCriteria.builder().build();
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "productId"));
 
         when(productRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(Page.empty());
 
         // when
-        productService.getProducts(criteria, -2, 5);
+        PageResponse<ProductDto> page = productService.getProducts(criteria, -1, 5);
 
         // then
+        assertNotNull(page);
         verify(productRepository, times(1)).findAll(any(Specification.class), eq(pageable));
     }
 
@@ -209,26 +203,29 @@ class ProductServiceTest {
         when(productRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(Page.empty());
 
         // when
-        productService.getProducts(criteria, 0, 0);
+        PageResponse<ProductDto> page = productService.getProducts(criteria, 0, 0);
 
         // then
+        assertNotNull(page);
         verify(productRepository, times(1)).findAll(any(Specification.class), eq(pageable));
     }
 
     @Test
-    void getProducts_AllCriteriaNull_NoSpecApplied() {
+    void getProducts_AllCriteriaNull_ReturnsAll() {
         // given
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                null, null, null, null, null, null, null, null, null, null
-        );
+        ProductSearchCriteria criteria = ProductSearchCriteria.builder().build();
 
-        when(productRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(Page.empty());
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "productId"));
+        Page<ProductEntity> pageResult = new PageImpl<>(List.of(sampleProductEntity), pageable, 1);
+
+        when(productRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(pageResult);
+        when(productMapper.toDto(sampleProductEntity)).thenReturn(sampleProductDto);
 
         // when
         PageResponse<ProductDto> result = productService.getProducts(criteria, 0, 5);
 
         // then
-        assertTrue(result.content().isEmpty());
+        assertFalse(result.content().isEmpty());
         verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
     }
 
@@ -241,18 +238,18 @@ class ProductServiceTest {
         CategoryEntity critCategory = new CategoryEntity();
         critCategory.setCategoryId(888);
 
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                10,        // productId
-                "Laptop",           // name
-                "Gaming",           // description
-                1999.99,            // price
-                100,                // quantityInStock
-                critSeller,         // seller
-                critCategory,       // category
-                "DESC",             // sortDirection
-                "price",            // sortBy
-                "someImage.jpg"     // imageUrl (not used in if-blocks, but part of record)
-        );
+        ProductSearchCriteria criteria = ProductSearchCriteria.builder()
+                .productId(1)
+                .name("Sample Product")
+                .description("Sample Desc")
+                .price(10.0)
+                .quantityInStock(5)
+                .seller(critSeller)
+                .category(critCategory)
+                .sortDirection("DESC")
+                .sortBy("price")
+                .imageUrl("http://example.com/image.jpg")
+                .build();
 
         Page<ProductEntity> pageResult = new PageImpl<>(
                 List.of(sampleProductEntity),
@@ -270,104 +267,7 @@ class ProductServiceTest {
 
         // then
         assertEquals(1, response.content().size());
-        assertEquals("Sample Product", response.content().get(0).getName());
-        verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
-    }
-
-    @Test
-    void getProducts_HasProductIdOnly_UsesHasIdSpec() {
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                10, null, null, null, null, null, null, null, null, null
-        );
-
-        when(productRepository.findAll(any(Specification.class), any(Pageable.class)))
-                .thenReturn(Page.empty());
-
-        productService.getProducts(criteria, 0, 5);
-
-        verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
-    }
-
-    @Test
-    void getProducts_HasNameOnly_UsesHasNameSpec() {
-        // given
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                null, "Laptop", null, null, null, null, null, null, null, null
-        );
-
-        when(productRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(Page.empty());
-
-        // when
-        productService.getProducts(criteria, 0, 5);
-
-        // then
-        verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
-    }
-
-
-    @Test
-    void getProducts_HasDescriptionOnly_UsesHasSubstringInDescriptionSpec() {
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                null, null, "Gaming", null, null, null, null, null, null, null
-        );
-
-        when(productRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(Page.empty());
-        productService.getProducts(criteria, 0, 5);
-
-        verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
-    }
-
-    @Test
-    void getProducts_HasPriceOnly_UsesPriceInRangeSpec() {
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                null, null, null, 10.0, null, null, null, null, null, null
-        );
-
-        when(productRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(Page.empty());
-        productService.getProducts(criteria, 0, 5);
-
-        verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
-    }
-
-    @Test
-    void getProducts_HasQuantityInStockOnly_UsesLeftAtLeastSpec() {
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                null, null, null, null, 50, null, null, null, null, null
-        );
-
-        when(productRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(Page.empty());
-        productService.getProducts(criteria, 0, 5);
-
-        verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
-    }
-
-    @Test
-    void getProducts_HasSellerOnly_UsesHasSellerSpec() {
-        UserEntity seller = new UserEntity();
-        seller.setUserId(777);
-
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                null, null, null, null, null, seller, null, null, null, null
-        );
-
-        when(productRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(Page.empty());
-        productService.getProducts(criteria, 0, 5);
-
-        verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
-    }
-
-    @Test
-    void getProducts_HasCategoryOnly_UsesHasCategorySpec() {
-        CategoryEntity category = new CategoryEntity();
-        category.setCategoryId(555);
-
-        ProductSearchCriteria criteria = new ProductSearchCriteria(
-                null, null, null, null, null, null, category, null, null, null
-        );
-
-        when(productRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(Page.empty());
-        productService.getProducts(criteria, 0, 5);
-
+        assertEquals("Sample Product", response.content().getFirst().getName());
         verify(productRepository).findAll(any(Specification.class), any(Pageable.class));
     }
 

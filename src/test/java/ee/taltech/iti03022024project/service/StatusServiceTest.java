@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,30 +78,30 @@ class StatusServiceTest {
     }
 
     @Test
-    void getStatuses_EmptySearchTerm_ReturnsEmptyPage() {
+    void getStatuses_EmptySearchTerm_ReturnsAllStatuses() {
         // given
         String searchTerm = "";
         int pageNo = 0;
         int pageSize = 5;
 
-        Page<StatusEntity> emptyMockPage = new PageImpl<>(
-                Collections.emptyList(),
+        Page<StatusEntity> mockPage = new PageImpl<>(
+                List.of(sampleStatusEntity),
                 PageRequest.of(pageNo, pageSize),
                 0
         );
 
         when(statusRepository.findAllByStatusNameContaining(eq(searchTerm), any(PageRequest.class)))
-                .thenReturn(emptyMockPage);
+                .thenReturn(mockPage);
 
         // when
         PageResponse<StatusDto> result = statusService.getStatuses(searchTerm, pageNo, pageSize);
 
         // then
         assertNotNull(result);
-        assertTrue(result.content().isEmpty());
+        assertEquals(1, result.content().size());
         verify(statusRepository, times(1))
                 .findAllByStatusNameContaining(eq(searchTerm), any(PageRequest.class));
-        verifyNoInteractions(statusMapper);
+        verify(statusMapper, times(1)).toDto(sampleStatusEntity);
     }
 
     // ---------------------------------------------------------------------------------------------

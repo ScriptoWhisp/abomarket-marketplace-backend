@@ -19,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,31 +87,54 @@ class CategoryServiceTest {
     }
 
     @Test
-    void getCategories_EmptySearchTerm_ReturnsEmptyPage() {
+    void getCategories_EmptySearchTerm_ReturnsAllElements() {
         // given
-        String searchTerm = "";
+        String searchTerm = ""; // Empty search term should match all categories
         int pageNo = 0;
         int pageSize = 5;
 
-        Page<CategoryEntity> emptyMockPage = new PageImpl<>(
-                Collections.emptyList(),
+        // Mock repository response with a sample page of categories
+        List<CategoryEntity> mockCategoryEntities = List.of(
+                new CategoryEntity() {{
+                    setCategoryId(1);
+                    setCategoryName("Electronics");
+                }},
+                new CategoryEntity() {{
+                    setCategoryId(2);
+                    setCategoryName("Books");
+                }}
+        );
+
+        Page<CategoryEntity> mockPage = new PageImpl<>(
+                mockCategoryEntities,
                 PageRequest.of(pageNo, pageSize),
-                0
+                mockCategoryEntities.size()
         );
 
         when(categoryRepository.findAllByCategoryNameContaining(eq(searchTerm), any(PageRequest.class)))
-                .thenReturn(emptyMockPage);
+                .thenReturn(mockPage);
+
+        // Map CategoryEntity to CategoryDto for the service layer
+        when(categoryMapper.toDto(any(CategoryEntity.class)))
+                .thenAnswer(invocation -> {
+                    CategoryEntity entity = invocation.getArgument(0);
+                    return new CategoryDto(entity.getCategoryId(), entity.getCategoryName());
+                });
 
         // when
         PageResponse<CategoryDto> result = categoryService.getCategories(searchTerm, pageNo, pageSize);
 
         // then
         assertNotNull(result);
-        assertTrue(result.content().isEmpty());
+        assertEquals(2, result.content().size());
+        assertEquals("Electronics", result.content().getFirst().getName());
+        assertEquals("Books", result.content().getLast().getName());
+
         verify(categoryRepository, times(1))
                 .findAllByCategoryNameContaining(eq(searchTerm), any(PageRequest.class));
-        verifyNoInteractions(categoryMapper);
+        verify(categoryMapper, times(2)).toDto(any(CategoryEntity.class)); // Two mappings should occur
     }
+
 
     // ---------------------------------------------------------------------------------------------
     // getCategoryById

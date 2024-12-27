@@ -92,6 +92,27 @@ class UserServiceTest {
         verify(usersRepository).findAllByEmailContaining(eq(search), any(Pageable.class));
     }
 
+    @Test
+    void getUsers_NotMatchingSearch_ReturnsEmptyPage() {
+        // given
+        String search = "examples";
+        int pageNo = 0;
+        int pageSize = 10;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+
+        Page<UserEntity> userPage = new PageImpl<>(List.of(), pageRequest, 0);
+
+        when(usersRepository.findAllByEmailContaining(eq(search), any(Pageable.class))).thenReturn(userPage);
+
+        // when
+        PageResponse<UserDto> response = userService.getUsers(search, pageNo, pageSize);
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.content()).isEmpty();
+        verify(usersRepository).findAllByEmailContaining(eq(search), any(Pageable.class));
+    }
+
     // ---------------------------------------------------------------------------------------------
     // getUserById
     // ---------------------------------------------------------------------------------------------

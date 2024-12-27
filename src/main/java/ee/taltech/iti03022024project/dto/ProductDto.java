@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -13,6 +14,7 @@ import java.time.Instant;
 
 @Schema(name = "Product", description = "DTO for information about product")
 @Data
+@Builder
 @AllArgsConstructor
 @Validated
 public class ProductDto {

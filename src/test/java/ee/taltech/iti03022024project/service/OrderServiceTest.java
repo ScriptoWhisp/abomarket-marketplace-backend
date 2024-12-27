@@ -47,8 +47,18 @@ class OrderServiceTest {
     void setUp() {
         orderEntity = new OrderEntity();
         orderEntity.setOrderId(10);
+        StatusEntity status = new StatusEntity();
+        status.setStatusId(1);
+        orderEntity.setStatus(status);
+        UserEntity user = new UserEntity();
+        user.setUserId(100);
+        orderEntity.setUser(user);
 
-        orderDto = OrderDto.builder().id(10).statusId(1).build();
+        orderDto = OrderDto.builder()
+                .id(10)
+                .statusId(1)
+                .userId(100)
+                .build();
 
         statusEntity = new StatusEntity();
         statusEntity.setStatusId(1);
@@ -64,7 +74,7 @@ class OrderServiceTest {
     @Test
     void getOrders_ValidCriteria_ReturnsPagedOrders() {
         // given
-        OrderSearchCriteria criteria = new OrderSearchCriteria(10, 100, 1); // id=10, userId=100, statusId=1
+        OrderSearchCriteria criteria = new OrderSearchCriteria(10, 1, 100);
         int pageNo = 0;
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
@@ -168,6 +178,23 @@ class OrderServiceTest {
                 .hasMessageContaining("Status with id 1 not found");
         verify(statusRepository).findById(1);
         verify(orderRepository, never()).save(any(OrderEntity.class));
+    }
+
+    @Test
+    void createOrder_StatusFound_SetStatus() {
+        // given
+        when(statusRepository.findById(1)).thenReturn(Optional.of(statusEntity));
+        when(orderRepository.save(any(OrderEntity.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        // when
+        OrderDto createdOrder = orderService.createOrder(orderDto);
+
+        // then
+        assertThat(createdOrder).isNotNull();
+        assertThat(createdOrder.getId()).isEqualTo(10);
+        assertThat(createdOrder.getStatusId()).isEqualTo(1);
+        verify(statusRepository).findById(1);
+        verify(orderRepository).save(orderEntity);
     }
 
     @Test

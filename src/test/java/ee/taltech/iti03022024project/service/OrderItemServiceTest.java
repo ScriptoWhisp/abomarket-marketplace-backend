@@ -1,7 +1,9 @@
 package ee.taltech.iti03022024project.service;
 
 import ee.taltech.iti03022024project.criteria.OrderItemSearchCriteria;
+import ee.taltech.iti03022024project.domain.OrderEntity;
 import ee.taltech.iti03022024project.domain.OrderItemEntity;
+import ee.taltech.iti03022024project.domain.ProductEntity;
 import ee.taltech.iti03022024project.dto.OrderItemDto;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -33,18 +36,57 @@ class OrderItemServiceTest {
     @InjectMocks
     private OrderItemService orderItemService;
 
+
     private OrderItemEntity orderItemEntity;
     private OrderItemDto orderItemDto;
+    private List<OrderItemEntity> mockDatabase;
 
     @BeforeEach
     void setUp() {
-        orderItemEntity = new OrderItemEntity();
-        orderItemEntity.setOrderItemId(10);
+        // Mock database entities
+        OrderItemEntity entity1 = new OrderItemEntity();
+        entity1.setOrderItemId(1);
+        entity1.setQuantity(10);
+        entity1.setPriceAtTimeOfOrder(99.99);
+        ProductEntity product1 = new ProductEntity();
+        product1.setProductId(1);
+        entity1.setProduct(product1);
+        OrderEntity order1 = new OrderEntity();
+        order1.setOrderId(100);
+        entity1.setOrder(order1);
 
-        orderItemDto = OrderItemDto.builder().id(10).build();
+        OrderItemEntity entity2 = new OrderItemEntity();
+        entity2.setOrderItemId(2);
+        entity2.setQuantity(5);
+        entity2.setPriceAtTimeOfOrder(49.99);
+        OrderEntity order2 = new OrderEntity();
+        order2.setOrderId(200);
+        entity2.setOrder(order2);
 
-        lenient().when(orderItemMapper.toEntity(any(OrderItemDto.class))).thenReturn(orderItemEntity);
-        lenient().when(orderItemMapper.toDto(any(OrderItemEntity.class))).thenReturn(orderItemDto);
+        OrderItemEntity entity3 = new OrderItemEntity();
+        entity3.setOrderItemId(3);
+        entity3.setQuantity(7);
+        entity3.setPriceAtTimeOfOrder(29.99);
+        OrderEntity order3 = new OrderEntity();
+        order3.setOrderId(300);
+        entity3.setOrder(order3);
+
+        orderItemEntity = entity1;
+
+        mockDatabase = List.of(entity1, entity2, entity3);
+
+        // Mock DTOs
+        OrderItemDto dto1 = OrderItemDto.builder().id(1).quantity(10).priceAtTimeOfOrder(99.99).orderId(100).build();
+        OrderItemDto dto2 = OrderItemDto.builder().id(2).quantity(5).priceAtTimeOfOrder(49.99).orderId(200).build();
+        OrderItemDto dto3 = OrderItemDto.builder().id(3).quantity(7).priceAtTimeOfOrder(29.99).orderId(300).build();
+
+        orderItemDto = dto1;
+
+        // Mapper configuration
+        lenient().when(orderItemMapper.toDto(entity1)).thenReturn(dto1);
+        lenient().when(orderItemMapper.toDto(entity2)).thenReturn(dto2);
+        lenient().when(orderItemMapper.toDto(entity3)).thenReturn(dto3);
+        lenient().when(orderItemMapper.toEntity(dto1)).thenReturn(entity1);
     }
 
     // ----------------------------------------------------------------------------------------
@@ -53,7 +95,7 @@ class OrderItemServiceTest {
     @Test
     void getOrderItems_ValidCriteria_ReturnsPagedOrderItems() {
         // given
-        OrderItemSearchCriteria criteria = OrderItemSearchCriteria.builder().id(10).build();
+        OrderItemSearchCriteria criteria = OrderItemSearchCriteria.builder().id(1).build();
         int pageNo = 0;
         int pageSize = 2;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
@@ -71,7 +113,7 @@ class OrderItemServiceTest {
         System.out.println(response);
         assertThat(response).isNotNull();
         assertThat(response.content()).hasSize(1);
-        assertThat(response.content().getFirst().getId()).isEqualTo(10);
+        assertThat(response.content().getFirst().getId()).isEqualTo(1);
         verify(orderItemRepository).findAll(any(Specification.class), eq(pageRequest));
     }
 
@@ -98,17 +140,19 @@ class OrderItemServiceTest {
     }
 
     @Test
-    void getOrderItems_AllCriteriaNull_UsesEmptySpec() {
+    void getOrderItems_OrderIdCriteria_ReturnsFilteredOrderItems() {
         // given
-        // All criteria are null => no spec filters
-        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, null, null, null);
+        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, 100, null, null, null);
         int pageNo = 0;
         int pageSize = 5;
-
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<OrderItemEntity> mockPage =
-                new PageImpl<>(Collections.singletonList(orderItemEntity), pageRequest, 1);
 
+        // Filter the mock database
+        List<OrderItemEntity> filteredEntities = mockDatabase.stream()
+                .filter(entity -> entity.getOrder().getOrderId() == criteria.orderId())
+                .toList();
+
+        Page<OrderItemEntity> mockPage = new PageImpl<>(filteredEntities, pageRequest, filteredEntities.size());
         when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest))).thenReturn(mockPage);
 
         // when
@@ -116,120 +160,89 @@ class OrderItemServiceTest {
 
         // then
         assertThat(response).isNotNull();
-        assertThat(response.content()).hasSize(1);
-        assertThat(response.content().get(0).getId()).isEqualTo(10);
+        assertThat(response.content()).hasSize(filteredEntities.size());
+        assertThat(response.content().get(0).getOrderId()).isEqualTo(100);
         verify(orderItemRepository).findAll(any(Specification.class), eq(pageRequest));
     }
 
     @Test
-    void getOrderItems_IdCriteria_AddsSpec() {
+    void getOrderItems_QuantityCriteria_ReturnsFilteredOrderItems() {
         // given
-        // Only ID is non-null
-        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(10, null, null, null, null);
+        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, null, 5, null);
         int pageNo = 0;
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 
-        when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest)))
-                .thenReturn(Page.empty());
+        // Filter the mock database
+        List<OrderItemEntity> filteredEntities = mockDatabase.stream()
+                .filter(entity -> entity.getQuantity() == criteria.quantity())
+                .toList();
+
+        Page<OrderItemEntity> mockPage = new PageImpl<>(filteredEntities, pageRequest, filteredEntities.size());
+        when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest))).thenReturn(mockPage);
 
         // when
         PageResponse<OrderItemDto> response = orderItemService.getOrderItems(criteria, pageNo, pageSize);
 
         // then
         assertThat(response).isNotNull();
-        // we expect an empty page, but crucially we tested the ID branch
-        assertThat(response.content()).isEmpty();
+        assertThat(response.content()).hasSize(filteredEntities.size());
+        assertThat(response.content().get(0).getQuantity()).isEqualTo(5);
         verify(orderItemRepository).findAll(any(Specification.class), eq(pageRequest));
     }
 
     @Test
-    void getOrderItems_QuantityCriteria_AddsSpec() {
+    void getOrderItems_PriceAtTimeOfOrderCriteria_ReturnsFilteredOrderItems() {
         // given
-        // Only quantity is non-null
-        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, 5, null, null, null);
+        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, null, null, 29.99);
         int pageNo = 0;
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 
-        when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest)))
-                .thenReturn(Page.empty());
+        // Filter the mock database
+        List<OrderItemEntity> filteredEntities = mockDatabase.stream()
+                .filter(entity -> entity.getPriceAtTimeOfOrder() == criteria.priceAtTimeOfOrder())
+                .toList();
+
+        Page<OrderItemEntity> mockPage = new PageImpl<>(filteredEntities, pageRequest, filteredEntities.size());
+        when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest))).thenReturn(mockPage);
 
         // when
         PageResponse<OrderItemDto> response = orderItemService.getOrderItems(criteria, pageNo, pageSize);
 
         // then
         assertThat(response).isNotNull();
-        assertThat(response.content()).isEmpty();
+        assertThat(response.content()).hasSize(filteredEntities.size());
+        assertThat(response.content().get(0).getPriceAtTimeOfOrder()).isEqualTo(29.99);
         verify(orderItemRepository).findAll(any(Specification.class), eq(pageRequest));
     }
 
     @Test
-    void getOrderItems_ProductIdCriteria_AddsSpec() {
+    void getOrderItems_AllCriteriaNull_ReturnsAllOrderItems() {
         // given
-        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, 20, null, null);
+        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, null, null, null);
         int pageNo = 0;
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 
-        when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest)))
-                .thenReturn(Page.empty());
+        Page<OrderItemEntity> mockPage = new PageImpl<>(mockDatabase, pageRequest, mockDatabase.size());
+        when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest))).thenReturn(mockPage);
 
         // when
         PageResponse<OrderItemDto> response = orderItemService.getOrderItems(criteria, pageNo, pageSize);
 
         // then
         assertThat(response).isNotNull();
-        assertThat(response.content()).isEmpty();
+        assertThat(response.content()).hasSize(mockDatabase.size());
         verify(orderItemRepository).findAll(any(Specification.class), eq(pageRequest));
     }
 
-    @Test
-    void getOrderItems_OrderIdCriteria_AddsSpec() {
-        // given
-        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, null, 100, null);
-        int pageNo = 0;
-        int pageSize = 5;
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-
-        when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest)))
-                .thenReturn(Page.empty());
-
-        // when
-        PageResponse<OrderItemDto> response = orderItemService.getOrderItems(criteria, pageNo, pageSize);
-
-        // then
-        assertThat(response).isNotNull();
-        assertThat(response.content()).isEmpty();
-        verify(orderItemRepository).findAll(any(Specification.class), eq(pageRequest));
-    }
-
-    @Test
-    void getOrderItems_PriceAtTimeOfOrderCriteria_AddsSpec() {
-        // given
-        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, null, null, 9.99);
-        int pageNo = 0;
-        int pageSize = 5;
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-
-        when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest)))
-                .thenReturn(Page.empty());
-
-        // when
-        PageResponse<OrderItemDto> response = orderItemService.getOrderItems(criteria, pageNo, pageSize);
-
-        // then
-        assertThat(response).isNotNull();
-        assertThat(response.content()).isEmpty();
-        verify(orderItemRepository).findAll(any(Specification.class), eq(pageRequest));
-    }
 
     @Test
     void getOrderItems_NegativePageNo_DefaultsToZero() {
         // given
-        // negative pageNo => should default to 0
         OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, null, null, null);
-        int pageNo = -1;  // negative
+        int pageNo = -1;
         int pageSize = 2;
         PageRequest expectedRequest = PageRequest.of(0, 2); // corrected to page=0
 
@@ -248,7 +261,6 @@ class OrderItemServiceTest {
     @Test
     void getOrderItems_PageSizeLessThanOne_DefaultsToOne() {
         // given
-        // pageSize < 1 => defaults to 1
         OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(null, null, null, null, null);
         int pageNo = 0;
         int pageSize = 0; // invalid
@@ -270,13 +282,13 @@ class OrderItemServiceTest {
     void getOrderItems_AllCriteriaNonNull_ReturnsExpectedPage() {
         // given
         // All fields are non-null => combine all specs
-        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(10, 5, 20, 100, 9.99);
-        int pageNo = 2;
+        OrderItemSearchCriteria criteria = new OrderItemSearchCriteria(1, 100, 1, 100, 90.99);
+        int pageNo = 0;
         int pageSize = 3;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 
         Page<OrderItemEntity> mockPage =
-                new PageImpl<>(Collections.singletonList(orderItemEntity), pageRequest, 1);
+                new PageImpl<>(List.of(orderItemEntity), pageRequest, 1);
 
         when(orderItemRepository.findAll(any(Specification.class), eq(pageRequest)))
                 .thenReturn(mockPage);
@@ -287,7 +299,7 @@ class OrderItemServiceTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.content()).hasSize(1);
-        assertThat(response.content().getFirst().getId()).isEqualTo(10);
+        assertThat(response.content().getFirst().getId()).isEqualTo(1);
         verify(orderItemRepository).findAll(any(Specification.class), eq(pageRequest));
     }
 
@@ -297,15 +309,15 @@ class OrderItemServiceTest {
     @Test
     void getOrderItemById_ItemExists_ReturnsDto() {
         // given
-        when(orderItemRepository.findById(10)).thenReturn(Optional.of(orderItemEntity));
+        when(orderItemRepository.findById(1)).thenReturn(Optional.of(orderItemEntity));
 
         // when
-        OrderItemDto actual = orderItemService.getOrderItemById(10);
+        OrderItemDto actual = orderItemService.getOrderItemById(1);
 
         // then
         assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(10);
-        verify(orderItemRepository).findById(10);
+        assertThat(actual.getId()).isEqualTo(1);
+        verify(orderItemRepository).findById(1);
     }
 
     @Test
@@ -333,7 +345,7 @@ class OrderItemServiceTest {
 
         // then
         assertThat(createdItem).isNotNull();
-        assertThat(createdItem.getId()).isEqualTo(10);
+        assertThat(createdItem.getId()).isEqualTo(1);
         verify(orderItemRepository).save(orderItemEntity);
     }
 
