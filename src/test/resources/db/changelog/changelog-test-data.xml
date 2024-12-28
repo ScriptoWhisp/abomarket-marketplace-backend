@@ -9,7 +9,6 @@
 
     <changeSet id="2024-12-20 Add data for tests" author="Alexander Smirnov">
         <insert tableName="users">
-            <column name="user_id" value="1"/>
             <column name="first_name" value="userName1"/>
             <column name="last_name" value="userLastName1"/>
             <column name="email" value="userEmail1@gmail.com"/>
@@ -21,7 +20,6 @@
         </insert>
 
         <insert tableName="users">
-            <column name="user_id" value="2"/>
             <column name="first_name" value="userName2"/>
             <column name="last_name" value="userLastName2"/>
             <column name="email" value="userEmail2@gmail.com"/>
@@ -33,7 +31,6 @@
         </insert>
 
         <insert tableName="users">
-            <column name="user_id" value="3"/>
             <column name="first_name" value="userName3"/>
             <column name="last_name" value="userLastName3"/>
             <column name="email" value="userEmail3@gmail.com"/>
@@ -93,19 +90,16 @@
         </insert>
 
         <insert tableName="orders">
-            <column name="order_id" value="1"/>
             <column name="user_id" value="1"/>
             <column name="status_id" value="0"/>
         </insert>
 
         <insert tableName="orders">
-            <column name="order_id" value="2"/>
             <column name="user_id" value="1"/>
             <column name="status_id" value="0"/>
         </insert>
 
         <insert tableName="orders">
-            <column name="order_id" value="3"/>
             <column name="user_id" value="3"/>
             <column name="status_id" value="0"/>
         </insert>

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.nullValue;
@@ -114,7 +113,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(patch("/api/users/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"location\":\"updatedLocation\"}"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -164,6 +163,27 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(delete("/api/users/2")
                         .header("Authorization", "Bearer " + adminJwtToken))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void createUserSuccessful() throws Exception {
+        String newUserJson = """
+        {
+            "email": "john.doe@example.com",
+            "password": "securePassword123",
+            "firstName": "John",
+            "lastName": "Doe",
+            "phone": "1234567890",
+            "location": "New York"
+        }
+        """;
+
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newUserJson))
+                .andExpect(status().isCreated()) // Expect HTTP 201 Created
+                .andExpect(jsonPath("$.id").exists()) // Check that the response contains the new user ID
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
     }
 
 
