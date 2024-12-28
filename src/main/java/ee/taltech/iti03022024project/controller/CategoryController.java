@@ -48,7 +48,7 @@ public class CategoryController {
     @Operation(summary = "Create category", description = "Creates a new category and returns it.")
     @ApiResponse(responseCode = "200", description = "Category created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryDto.class)))
     @PostMapping
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Received request to create category: {}", categoryDto);
         CategoryDto createdCategory = categoryService.createCategory(categoryDto);
         log.info("Category created successfully: {}", createdCategory);

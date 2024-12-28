@@ -42,17 +42,14 @@
         </insert>
 
         <insert tableName="statuses">
-            <column name="status_id" value="1"/>
             <column name="status_name" value="orderPlaced"/>
         </insert>
 
         <insert tableName="categories">
-            <column name="category_id" value="1"/>
             <column name="category_name" value="category1"/>
         </insert>
 
         <insert tableName="categories">
-            <column name="category_id" value="2"/>
             <column name="category_name" value="category2"/>
         </insert>
 
