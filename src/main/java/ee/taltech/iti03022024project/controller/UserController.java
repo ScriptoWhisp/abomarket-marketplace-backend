@@ -59,7 +59,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAuthorizedUser());
     }
 
-    @Operation(summary = "Patch authorized user", description = "Patcher authorized user's information and returns updated info.")
+    @Operation(summary = "Patch authorized user", description = "Patches authorized user's information and returns updated info.")
     @ApiResponse(responseCode = "200", description = "User updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     @PatchMapping("/profile")
     public ResponseEntity<UserDto> patchAuthorizedUser(@Valid @RequestBody UserDto userDto) {
@@ -69,7 +69,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @Operation(summary = "Patch user", description = "Patcher user's information and returns updated info, should be only possible to admins.")
+    @Operation(summary = "Patch user", description = "Patches user's information and returns updated info, should be only possible to admins.")
     @ApiResponse(responseCode = "200", description = "User updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     @PatchMapping("/{id}")
     public ResponseEntity<UserDto> patchUserById(@PathVariable int id, @Valid @RequestBody UserDto userDto) {

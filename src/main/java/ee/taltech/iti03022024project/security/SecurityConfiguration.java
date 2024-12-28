@@ -67,6 +67,7 @@ public class SecurityConfiguration {
                         // permit to /api/users/id for all
                         .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/public/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, API_STATUSES).permitAll()
@@ -77,7 +78,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, API_STATUSES).hasRole(ADMIN)
                         .requestMatchers(HttpMethod.POST, API_STATUSES).hasRole(ADMIN)
                         .requestMatchers(HttpMethod.PATCH, API_STATUSES).hasRole(ADMIN)
-                        .requestMatchers(HttpMethod.DELETE, "/api/users").hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.PATCH, "/api/users/{id}").hasRole(ADMIN)
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtRequestFilter(key()), UsernamePasswordAuthenticationFilter.class)

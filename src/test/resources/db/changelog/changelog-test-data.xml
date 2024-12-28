@@ -13,7 +13,7 @@
             <column name="first_name" value="userName1"/>
             <column name="last_name" value="userLastName1"/>
             <column name="email" value="userEmail1@gmail.com"/>
-            <column name="password" value="userPassword1"/>
+            <column name="password" value="$2a$10$w9hT/ZVwLbm1AfzPzDh6mODh57HYUPiYRlECi/EhFHk/k7CZZ8h7q"/>
             <column name="phone" value="userPhone1"/>
             <column name="location" value="userLocation1"/>
             <column name="created_at" value="2024-12-20 00:00:00"/>
@@ -25,7 +25,7 @@
             <column name="first_name" value="userName2"/>
             <column name="last_name" value="userLastName2"/>
             <column name="email" value="userEmail2@gmail.com"/>
-            <column name="password" value="userPassword2"/>
+            <column name="password" value="$2a$10$w9hT/ZVwLbm1AfzPzDh6mODh57HYUPiYRlECi/EhFHk/k7CZZ8h7q"/>
             <column name="phone" value="userPhone2"/>
             <column name="location" value="userLocation2"/>
             <column name="created_at" value="2024-12-20 00:00:00"/>
@@ -37,11 +37,11 @@
             <column name="first_name" value="userName3"/>
             <column name="last_name" value="userLastName3"/>
             <column name="email" value="userEmail3@gmail.com"/>
-            <column name="password" value="userPassword3"/>
+            <column name="password" value="$2a$10$w9hT/ZVwLbm1AfzPzDh6mODh57HYUPiYRlECi/EhFHk/k7CZZ8h7q"/>
             <column name="phone" value="userPhone3"/>
             <column name="location" value="userLocation3"/>
             <column name="created_at" value="2024-12-20 00:00:00"/>
-            <column name="role_id" value="1"/>
+            <column name="role_id" value="2"/>
         </insert>
 
         <insert tableName="statuses">
@@ -76,7 +76,7 @@
             <column name="description" value="productDescription2"/>
             <column name="price" value="200.0"/>
             <column name="quantity_in_stock" value="2"/>
-            <column name="seller_id" value="2"/>
+            <column name="seller_id" value="1"/>
             <column name="category_id" value="2"/>
             <column name="date_added" value="2024-12-20 00:00:00"/>
         </insert>
@@ -100,7 +100,7 @@
 
         <insert tableName="orders">
             <column name="order_id" value="2"/>
-            <column name="user_id" value="2"/>
+            <column name="user_id" value="1"/>
             <column name="status_id" value="0"/>
         </insert>
 
