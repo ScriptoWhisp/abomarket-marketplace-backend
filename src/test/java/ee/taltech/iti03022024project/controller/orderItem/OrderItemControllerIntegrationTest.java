@@ -22,7 +22,6 @@ class OrderItemControllerIntegrationTest extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     private String jwtToken;
-    private String adminJwtToken;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -35,16 +34,6 @@ class OrderItemControllerIntegrationTest extends AbstractIntegrationTest {
                 .getContentAsString();
 
         this.jwtToken = tokenResponse.substring(tokenResponse.indexOf(":\"") + 2, tokenResponse.indexOf("\"}"));
-
-        String adminTokenResponse = mockMvc.perform(post("/api/public/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"userEmail3@gmail.com\",\"password\":\"userPassword\"}"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        this.adminJwtToken = adminTokenResponse.substring(adminTokenResponse.indexOf(":\"") + 2, adminTokenResponse.indexOf("\"}"));
     }
 
     @Test

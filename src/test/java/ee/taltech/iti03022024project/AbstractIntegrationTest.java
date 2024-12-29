@@ -4,6 +4,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+@SuppressWarnings("java:S2187") // because sonar lint wants to add tests here
 public class AbstractIntegrationTest {
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER;
 
