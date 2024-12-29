@@ -54,7 +54,7 @@ class StatusControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/statuses"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.length()").value(2));
+                .andExpect(jsonPath("$.content.length()").value(3));
     }
 
     @Test
