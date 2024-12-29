@@ -2,15 +2,18 @@ package ee.taltech.iti03022024project.service;
 
 import ee.taltech.iti03022024project.criteria.OrderSearchCriteria;
 import ee.taltech.iti03022024project.domain.OrderEntity;
+import ee.taltech.iti03022024project.domain.RoleEntity;
 import ee.taltech.iti03022024project.domain.StatusEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.dto.OrderDto;
+import ee.taltech.iti03022024project.exception.BadTokenException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.OrderMapper;
 import ee.taltech.iti03022024project.repository.OrderRepository;
 import ee.taltech.iti03022024project.repository.StatusRepository;
 import ee.taltech.iti03022024project.responses.PageResponse;
+import ee.taltech.iti03022024project.security.AuthenticationFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +38,8 @@ class OrderServiceTest {
     private StatusRepository statusRepository;
     @Mock
     private OrderMapper orderMapper;
+    @Mock
+    private AuthenticationFacade authenticationFacade;
 
     @InjectMocks
     private OrderService orderService;
@@ -51,6 +56,10 @@ class OrderServiceTest {
         status.setStatusId(1);
         orderEntity.setStatus(status);
         UserEntity user = new UserEntity();
+        RoleEntity role = new RoleEntity();
+        role.setRoleName("ROLE_USER");
+        role.setRoleId(1);
+        user.setRole(role);
         user.setUserId(100);
         orderEntity.setUser(user);
 
@@ -256,6 +265,7 @@ class OrderServiceTest {
     @Test
     void updateOrder_ValidStatus_UpdatesSuccessfully() {
         // given
+        when(authenticationFacade.getAuthenticatedUser()).thenReturn(orderEntity.getUser());
         when(orderRepository.findById(10)).thenReturn(Optional.of(orderEntity));
         when(statusRepository.findById(1)).thenReturn(Optional.of(statusEntity));
         when(orderRepository.save(any(OrderEntity.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -289,6 +299,7 @@ class OrderServiceTest {
         // given
         when(orderRepository.findById(10)).thenReturn(Optional.of(orderEntity));
         when(statusRepository.findById(1)).thenReturn(Optional.empty());
+        when(authenticationFacade.getAuthenticatedUser()).thenReturn(orderEntity.getUser());
 
         // when / then
         assertThatThrownBy(() -> orderService.updateOrder(10, orderDto))
@@ -297,6 +308,51 @@ class OrderServiceTest {
         verify(orderRepository).findById(10);
         verify(statusRepository).findById(1);
         verify(orderRepository, never()).save(any(OrderEntity.class));
+    }
+
+    @Test
+    void updateOrder_AdminUpdatesOtherOrder_SuccessfullyUpdates() {
+        // given
+        UserEntity user = new UserEntity();
+        RoleEntity role = new RoleEntity();
+        role.setRoleName("ROLE_ADMIN");
+        role.setRoleId(2);
+        user.setRole(role);
+        user.setUserId(999);
+
+        when(statusRepository.findById(1)).thenReturn(Optional.of(statusEntity));
+        when(orderRepository.save(any(OrderEntity.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(orderRepository.findById(10)).thenReturn(Optional.of(orderEntity));
+        when(authenticationFacade.getAuthenticatedUser()).thenReturn(user);
+
+        // when
+        OrderDto updatedOrder = orderService.updateOrder(10, orderDto);
+
+        // then
+        assertThat(updatedOrder).isNotNull();
+        assertThat(updatedOrder.getId()).isEqualTo(10);
+        verify(orderRepository).findById(10);
+        verify(statusRepository).findById(1);
+    }
+
+    @Test
+    void updateOrder_NotAdminUpdatesOtherOrder_ThrowsBadToken() {
+        // given
+        UserEntity user = new UserEntity();
+        RoleEntity role = new RoleEntity();
+        role.setRoleName("ROLE_USER");
+        role.setRoleId(1);
+        user.setRole(role);
+        user.setUserId(999);
+
+        when(orderRepository.findById(10)).thenReturn(Optional.of(orderEntity));
+        when(authenticationFacade.getAuthenticatedUser()).thenReturn(user);
+
+        // when
+        assertThatThrownBy(() -> orderService.updateOrder(10, orderDto))
+                .isInstanceOf(BadTokenException.class)
+                .hasMessageContaining("User not authorized to update order");
+
     }
 
     // ----------------------------------------------------------------------------------------

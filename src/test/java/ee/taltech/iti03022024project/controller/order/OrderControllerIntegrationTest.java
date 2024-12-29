@@ -124,6 +124,15 @@ class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void updateOrderStatus_UserUpdatesAnotherUserOrderStatus_ReturnStatusForbidden() throws Exception {
+        mockMvc.perform(patch("/api/orders/3")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"statusId\":2}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void updateOrderStatus_OrderDoesNotExist_ReturnStatusNotFound() throws Exception {
         mockMvc.perform(patch("/api/orders/4")
                         .header("Authorization", "Bearer " + adminJwtToken)
