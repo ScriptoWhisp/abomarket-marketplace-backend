@@ -75,7 +75,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/public/login").permitAll()
                         .requestMatchers(HttpMethod.GET, API_ORDERS).authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/orders").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, API_ORDERS).hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.PATCH, API_ORDERS).authenticated()
                         .requestMatchers(HttpMethod.DELETE, API_ORDERS).hasRole(ADMIN)
                         .requestMatchers(HttpMethod.GET, "/api/order_items/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/order_items").authenticated()

@@ -5,6 +5,7 @@ import ee.taltech.iti03022024project.domain.RoleEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
 import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.exception.BadTokenException;
+import ee.taltech.iti03022024project.exception.ObjectCreationException;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.UserMapper;
 import ee.taltech.iti03022024project.repository.RolesRepository;
@@ -443,8 +444,8 @@ class UserServiceTest {
 
         // when / then
         assertThatThrownBy(() -> userService.createUser(userDto))
-                .isInstanceOf(BadTokenException.class)
-                .hasMessageContaining("Failed to create user: User with email test@example.com already exists");
+                .isInstanceOf(ObjectCreationException.class)
+                .hasMessageContaining("User with email test@example.com already exists");
 
         verify(usersRepository, times(1)).findByEmail("test@example.com");
         verify(usersRepository, never()).save(any(UserEntity.class));

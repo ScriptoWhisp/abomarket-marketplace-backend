@@ -30,8 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    public static final String USER_WITH_ID = "User with id ";
-    public static final String NOT_FOUND = " not found";
     private final UsersRepository usersRepository;
     private final RolesRepository rolesRepository;
     private final UserMapper userMapper;
@@ -95,32 +93,26 @@ public class UserService {
     }
 
     public UserDto createUser(UserDto userDto) {
-        try {
-            log.info("Attempting to create user with data: {}", userDto);
-            if (usersRepository.findByEmail(userDto.getEmail()).isPresent()) {
-                throw new ObjectCreationException("User with email " + userDto.getEmail() + " already exists");
-            }
-            UserEntity newUser = userMapper.toEntity(userDto);
-            newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-
-            RoleEntity defaultRole = rolesRepository.getReferenceById(1);
-            newUser.setRole(defaultRole); // set default role
-
-            // save user to give him unique id
-            UserEntity newUserWithId = usersRepository.save(newUser);
-
-            // create a cart for user
-            OrderEntity userUnfinishedOrder = orderService.createUnfinishedOrderForUser(newUserWithId);
-            newUserWithId.setUnfinishedOrder(userUnfinishedOrder);
-
-            UserEntity savedUser = usersRepository.save(newUserWithId);
-            log.info("User created successfully: {}", savedUser);
-            return userMapper.toDto(savedUser);
-        } catch (ObjectCreationException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BadTokenException("Failed to create user: " + e.getMessage());
+        log.info("Attempting to create user with data: {}", userDto);
+        if (usersRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new ObjectCreationException("User with email " + userDto.getEmail() + " already exists");
         }
+        UserEntity newUser = userMapper.toEntity(userDto);
+        newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        RoleEntity defaultRole = rolesRepository.getReferenceById(1);
+        newUser.setRole(defaultRole); // set default role
+
+        // save user to give him unique id
+        UserEntity newUserWithId = usersRepository.save(newUser);
+
+        // create a cart for user
+        OrderEntity userUnfinishedOrder = orderService.createUnfinishedOrderForUser(newUserWithId);
+        newUserWithId.setUnfinishedOrder(userUnfinishedOrder);
+
+        UserEntity savedUser = usersRepository.save(newUserWithId);
+        log.info("User created successfully: {}", savedUser);
+        return userMapper.toDto(savedUser);
     }
 
     public void deleteUser(int id) {

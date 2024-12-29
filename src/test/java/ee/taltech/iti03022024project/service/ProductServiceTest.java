@@ -24,8 +24,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -85,6 +84,7 @@ class ProductServiceTest {
 
         // By default, parseToken(...) returns validClaims
         lenient().when(jwtRequestFilter.parseToken("validTokenString")).thenReturn(validClaims);
+        lenient().when(validClaims.get("roles")).thenReturn(new ArrayList<>(List.of(new LinkedHashMap<>(Map.of("authority", "ROLE_USER")))));
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -148,7 +148,6 @@ class ProductServiceTest {
         );
         assertTrue(thrown.getMessage().contains("User and seller id not match"));
     }
-
     // ---------------------------------------------------------------------------------------------
     // getProducts
     // ---------------------------------------------------------------------------------------------
@@ -375,6 +374,24 @@ class ProductServiceTest {
         verify(productRepository).save(sampleProductEntity);
     }
 
+    @Test
+    void createProduct_AdminCreates_CreateProduct() {
+        // given
+        when(productMapper.toEntity(sampleProductDto)).thenReturn(sampleProductEntity);
+        when(productRepository.save(sampleProductEntity)).thenReturn(sampleProductEntity);
+        when(productMapper.toDto(sampleProductEntity)).thenReturn(sampleProductDto);
+        when(validClaims.get("userId")).thenReturn(999);
+        when(validClaims.get("roles")).thenReturn(new ArrayList<>(List.of(new LinkedHashMap<>(Map.of("authority", "ROLE_ADMIN")))));
+
+        // when
+        ProductDto result = productService.createProduct(sampleProductDto, validToken);
+
+        // then
+        assertNotNull(result);
+        assertEquals(sampleProductDto, result);
+        verify(productRepository).save(sampleProductEntity);
+    }
+
     // ---------------------------------------------------------------------------------------------
     // updateProduct
     // ---------------------------------------------------------------------------------------------
@@ -416,6 +433,45 @@ class ProductServiceTest {
 
         verify(productRepository).save(sampleProductEntity);
         assertEquals(updateDto, result);
+    }
+
+    @Test
+    void updateProduct_AdminUpdatesProduct_ReturnsProductDto() {
+        // given
+        int productId = 1;
+        ProductDto updateDto = new ProductDto(
+                1,
+                "Updated Product",
+                "Updated Desc",
+                99.99,
+                50,
+                123, // must match token userId
+                999, // categoryId
+                Instant.now(),
+                "http://example.com/new.jpg"
+        );
+
+        CategoryEntity newCategory = new CategoryEntity();
+        newCategory.setCategoryId(999);
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(sampleProductEntity));
+        when(categoryRepository.findById(999)).thenReturn(Optional.of(newCategory));
+        when(validClaims.get("userId")).thenReturn(999);
+        when(validClaims.get("roles")).thenReturn(new ArrayList<>(List.of(new LinkedHashMap<>(Map.of("authority", "ROLE_ADMIN")))));
+
+        when(productMapper.toDto(sampleProductEntity)).thenReturn(updateDto);
+
+        // when
+        ProductDto result = productService.updateProduct(productId, updateDto, validToken);
+
+        // then
+        assertNotNull(result);
+        assertEquals("Updated Product", sampleProductEntity.getName());
+        assertEquals(99.99, sampleProductEntity.getPrice());
+        assertEquals("Updated Desc", sampleProductEntity.getDescription());
+        assertEquals(50, sampleProductEntity.getQuantityInStock());
+        assertEquals(999, sampleProductEntity.getCategory().getCategoryId());
+        assertEquals("http://example.com/new.jpg", sampleProductEntity.getImageUrl());
     }
 
     @Test
@@ -682,7 +738,8 @@ class ProductServiceTest {
         // given
         int productId = 1;
         when(productRepository.findById(productId)).thenReturn(Optional.of(sampleProductEntity));
-        when(productMapper.toDto(sampleProductEntity)).thenReturn(sampleProductDto);
+        when(validClaims.get("roles")).thenReturn(new ArrayList<>(List.of(new LinkedHashMap<>(Map.of("authority", "ROLE_USER")))));
+
 
         // when
         productService.deleteProduct(productId, validToken);
@@ -706,5 +763,20 @@ class ProductServiceTest {
 
         assertTrue(thrown.getMessage().contains("Product with id 999 not found"));
         verify(productRepository, never()).delete(any(ProductEntity.class));
+    }
+
+    @Test
+    void deleteProduct_AdminDeletes_DeletesSuccessfully() {
+        // given
+        int productId = 1;
+        when(productRepository.findById(productId)).thenReturn(Optional.of(sampleProductEntity));
+        when(validClaims.get("userId")).thenReturn(999);
+        when(validClaims.get("roles")).thenReturn(new ArrayList<>(List.of(new LinkedHashMap<>(Map.of("authority", "ROLE_ADMIN")))));
+
+        // when
+        productService.deleteProduct(productId, validToken);
+
+        // then
+        verify(productRepository).delete(sampleProductEntity);
     }
 }

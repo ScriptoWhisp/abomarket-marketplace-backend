@@ -113,12 +113,14 @@ class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void updateOrderStatus_NotAdminUpdatesOrderStatus_ReturnStatusForbidden() throws Exception {
+    void updateOrderStatus_NotAdminUpdatesOrderStatus_ReturnUpdatedOrder() throws Exception {
         mockMvc.perform(patch("/api/orders/1")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"statusId\":2}"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.statusId").value(2));
     }
 
     @Test

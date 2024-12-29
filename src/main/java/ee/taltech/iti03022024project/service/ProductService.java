@@ -4,7 +4,6 @@ package ee.taltech.iti03022024project.service;
 import ee.taltech.iti03022024project.criteria.ProductSearchCriteria;
 import ee.taltech.iti03022024project.domain.CategoryEntity;
 import ee.taltech.iti03022024project.domain.ProductEntity;
-import ee.taltech.iti03022024project.domain.RoleEntity;
 import ee.taltech.iti03022024project.dto.ProductDto;
 import ee.taltech.iti03022024project.exception.BadTokenException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
@@ -26,6 +25,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 @Slf4j
 @Service
@@ -107,11 +109,8 @@ public class ProductService {
         }
 
         int userId = (int) claims.get("userId");
-        log.info("Token claims: userId: {}", userId);
-        int roleId = usersRepository.findById(userId).map(user -> user.getRole().getRoleId())
-                .orElseThrow(() -> new BadTokenException("User not found"));
-        log.info("Token claims: userId: {}, roleId: {}", userId, roleId);
-        if (userId != sellerId && roleId != 2) {
+        String role = (String) ((LinkedHashMap<?, ?>)((ArrayList<?>)claims.get("roles")).getFirst()).get("authority");
+        if (userId != sellerId && role.equals("ROLE_USER")) {
             throw new BadTokenException("User and seller id not match");
         }
         log.info("Token validation completed successfully");
