@@ -30,6 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
+    public static final String USER_WITH_ID = "User with id ";
+    public static final String NOT_FOUND = " not found";
     private final UsersRepository usersRepository;
     private final RolesRepository rolesRepository;
     private final UserMapper userMapper;
@@ -54,10 +56,10 @@ public class UserService {
     }
 
     public UserDto getAuthorizedUser() {
-        if (authenticationFacade.getAuthenticatedUser() == null)
+        UserEntity userEntity = authenticationFacade.getAuthenticatedUser();
+        if (userEntity == null)
             throw new BadTokenException("User not authorized");
         else {
-            UserEntity userEntity = authenticationFacade.getAuthenticatedUser();
             return userMapper.toDto(userEntity);
         }
     }

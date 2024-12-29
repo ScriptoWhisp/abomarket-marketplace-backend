@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Schema(name = "OrderItem", description = "DTO for information about order item")
 @Data
+@Builder
 @AllArgsConstructor
 public class OrderItemDto {
 
