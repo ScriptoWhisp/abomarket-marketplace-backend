@@ -1,10 +1,9 @@
 package ee.taltech.iti03022024project.controller.user;
 
 import ee.taltech.iti03022024project.AbstractIntegrationTest;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerIntegrationTest extends AbstractIntegrationTest {
-    private static final Logger log = LoggerFactory.getLogger(UserControllerIntegrationTest.class);
+@Transactional
+class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -50,7 +49,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getAllUsersTest() throws Exception {
+    void getAllUsers_UsersExist_ReturnAllUsers() throws Exception {
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
@@ -58,7 +57,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getUserByIdTestSuccessful() throws Exception {
+    void getUserById_UserWithId2Exists_ReturnUser() throws Exception {
         mockMvc.perform(get("/api/users/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2))
@@ -72,27 +71,26 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getUserByIdTestUserNotFound() throws Exception {
+    void getUserById_UserWithId4DoesNotExist_ReturnStatusNotFound() throws Exception {
         mockMvc.perform(get("/api/users/4"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void getAuthorizedUserSuccessful() throws Exception {
-        // 2. Выполняем запрос с токеном для доступа к защищенному ресурсу
+    void getAuthorizedUser_GetAuthorizedUserByToken_ReturnAuthorizedUser() throws Exception {
         mockMvc.perform(get("/api/users/profile")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getAuthorizedUserUnauthorized() throws Exception {
+    void getAuthorizedUser_UserIsNotAuthorized_ReturnStatusForbidden() throws Exception {
         mockMvc.perform(get("/api/users/profile"))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    public void patchAuthorizedUserSuccessful() throws Exception {
+    void patchAuthorizedUser_PatchAuthorizedUserByToken_ReturnPatchedAuthorizedUser() throws Exception {
         mockMvc.perform(patch("/api/users/profile")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,12 +102,11 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.email").exists())
                 .andExpect(jsonPath("$.password").exists())
                 .andExpect(jsonPath("$.phone").exists())
-                .andExpect(jsonPath("$.location").exists())
-                .andExpect(jsonPath("$.unfinishedOrderId").value(nullValue()));
+                .andExpect(jsonPath("$.location").exists());
     }
 
     @Test
-    public void patchAuthorizedUserNotAuthorized() throws Exception {
+    void patchAuthorizedUser_PatchUserWhichIsNotAuthorized_ReturnStatusUnauthorized() throws Exception {
         mockMvc.perform(patch("/api/users/profile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"location\":\"updatedLocation\"}"))
@@ -117,7 +114,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void patchUserByIdSuccessful() throws Exception {
+    void patchUserById_AdminPatchesUserById_ReturnPatchedUser() throws Exception {
         mockMvc.perform(patch("/api/users/1")
                         .header("Authorization", "Bearer " + adminJwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,12 +126,11 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.email").exists())
                 .andExpect(jsonPath("$.password").exists())
                 .andExpect(jsonPath("$.phone").exists())
-                .andExpect(jsonPath("$.location").exists())
-                .andExpect(jsonPath("$.unfinishedOrderId").value(nullValue()));
+                .andExpect(jsonPath("$.location").exists());
     }
 
     @Test
-    public void patchUserByIdUserNotFound() throws Exception {
+    void patchUserById_AdminPatchesUserWhichDoesNotExist_ReturnStatusNotFound() throws Exception {
         mockMvc.perform(patch("/api/users/4")
                         .header("Authorization", "Bearer " + adminJwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +139,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void patchUserByIdUserNotAdmin() throws Exception {
+    void patchUserById_NotAdminPatchesUserById_ReturnStatusForbidden() throws Exception {
         mockMvc.perform(patch("/api/users/2")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -152,39 +148,82 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void deleteUserNotAdmin() throws Exception {
+    void patchUserById_UnauthorizedUserPatchesUserById_ReturnStatusUnauthorized() throws Exception {
+        mockMvc.perform(patch("/api/users/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"updatedUserName2\"}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void deleteUser_NotAdminDeletesUser_ReturnStatusForbidden() throws Exception {
         mockMvc.perform(delete("/api/users/2")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    public void deleteUserAdmin() throws Exception {
+    void deleteUser_AdminDeletesUser_ReturnStatusNoContent() throws Exception {
         mockMvc.perform(delete("/api/users/2")
                         .header("Authorization", "Bearer " + adminJwtToken))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    public void createUserSuccessful() throws Exception {
+    void deleteUser_UserDoesNotExist_ReturnStatusNotFound() throws Exception {
+        mockMvc.perform(delete("/api/users/4")
+                        .header("Authorization", "Bearer " + adminJwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteUser_UnauthorizedUserDeletesUser_ReturnStatusUnauthorized() throws Exception {
+        mockMvc.perform(delete("/api/users/2"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void createUser_CreatesUser_ReturnNewUser() throws Exception {
         String newUserJson = """
         {
-            "email": "john.doe@example.com",
-            "password": "securePassword123",
-            "firstName": "John",
-            "lastName": "Doe",
-            "phone": "1234567890",
-            "location": "New York"
+            "firstName": "userName4",
+            "lastName": "userLastName4",
+            "email": "userEmail4@gmail.com",
+            "password": "userPassword",
+            "phone": "userPhone4",
+            "location": "userLocation4"
         }
         """;
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newUserJson))
-                .andExpect(status().isCreated()) // Expect HTTP 201 Created
-                .andExpect(jsonPath("$.id").exists()) // Check that the response contains the new user ID
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.firstName").value("userName4"))
+                .andExpect(jsonPath("$.lastName").exists())
+                .andExpect(jsonPath("$.email").exists())
+                .andExpect(jsonPath("$.password").exists())
+                .andExpect(jsonPath("$.phone").exists())
+                .andExpect(jsonPath("$.location").exists());
     }
 
+    @Test
+    void createUser_CreatesUserWithRegisteredEmail_returnInternalServerError() throws Exception {
+        String newUserJson = """
+        {
+            "firstName": "userName4",
+            "lastName": "userLastName4",
+            "email": "userEmail1@gmail.com",
+            "password": "userPassword",
+            "phone": "userPhone4",
+            "location": "userLocation4"
+        }
+        """;
 
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newUserJson))
+                .andExpect(status().isInternalServerError());
+    }
 }

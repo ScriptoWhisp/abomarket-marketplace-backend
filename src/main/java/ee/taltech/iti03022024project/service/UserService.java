@@ -39,6 +39,8 @@ public class UserService {
     private final AuthenticationFacade authenticationFacade;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String NOT_FOUND_MSG = "User with id %s not found";
+
     public PageResponse<UserDto> getUsers(String search, int pageNo, int pageSize) {
         log.info("Attempting to get users with search: {}, page: {}, size: {}", search, pageNo, pageSize);
         Pageable paging = PageRequest.of(pageNo, pageSize);
@@ -48,7 +50,7 @@ public class UserService {
 
     public UserDto getUserById(int id) {
         return usersRepository.findById(id).map(userMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
     }
 
     public UserDto getAuthorizedUser() {
@@ -73,7 +75,7 @@ public class UserService {
 
     public UserDto patchUserById(int id, UserDto userDto) {
         UserEntity userToUpdate = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
         return updateUser(userToUpdate, userDto);
     }
 
@@ -112,6 +114,8 @@ public class UserService {
             UserEntity savedUser = usersRepository.save(newUserWithId);
             log.info("User created successfully: {}", savedUser);
             return userMapper.toDto(savedUser);
+        } catch (ObjectCreationException e) {
+            throw e;
         } catch (Exception e) {
             throw new BadTokenException("Failed to create user: " + e.getMessage());
         }
@@ -120,7 +124,7 @@ public class UserService {
     public void deleteUser(int id) {
         log.info("Attempting to delete user with id {}", id);
         UserEntity userToDelete = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
         usersRepository.delete(userToDelete);
         log.info("User deleted successfully: {}", userToDelete);
     }

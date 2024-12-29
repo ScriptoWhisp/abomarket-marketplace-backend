@@ -4,6 +4,7 @@ package ee.taltech.iti03022024project.service;
 import ee.taltech.iti03022024project.criteria.ProductSearchCriteria;
 import ee.taltech.iti03022024project.domain.CategoryEntity;
 import ee.taltech.iti03022024project.domain.ProductEntity;
+import ee.taltech.iti03022024project.domain.RoleEntity;
 import ee.taltech.iti03022024project.dto.ProductDto;
 import ee.taltech.iti03022024project.exception.BadTokenException;
 import ee.taltech.iti03022024project.exception.ObjectCreationException;
@@ -94,7 +95,7 @@ public class ProductService {
         return new PageResponse<>(page.map(productMapper::toDto));
     }
 
-    private void tokenValidation(ProductDto productDto, String token) {
+    private void tokenValidation(int sellerId, String token) {
         log.info("Starting token validation");
         if (token == null || token.isEmpty()) {
             throw new BadTokenException("Token is null or empty");
@@ -106,7 +107,11 @@ public class ProductService {
         }
 
         int userId = (int) claims.get("userId");
-        if (userId != productDto.getSellerId()) {
+        log.info("Token claims: userId: {}", userId);
+        int roleId = usersRepository.findById(userId).map(user -> user.getRole().getRoleId())
+                .orElseThrow(() -> new BadTokenException("User not found"));
+        log.info("Token claims: userId: {}, roleId: {}", userId, roleId);
+        if (userId != sellerId && roleId != 2) {
             throw new BadTokenException("User and seller id not match");
         }
         log.info("Token validation completed successfully");
@@ -128,7 +133,7 @@ public class ProductService {
     }
 
     public ProductDto createProduct(ProductDto productDto, String token) {
-        tokenValidation(productDto, token);
+        tokenValidation(productDto.getSellerId(), token);
 
         try {
             log.info("Attempting to create product with data: {}", productDto);
@@ -142,12 +147,12 @@ public class ProductService {
     }
 
     public ProductDto updateProduct(int id, ProductDto productDto, String token) {
-        tokenValidation(productDto, token);
-
         log.info("Attempting to update product with id {}, with data: {}", id, productDto);
 
         ProductEntity productToUpdate = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
+
+        tokenValidation(productToUpdate.getSeller().getUserId(), token);
 
         if (productDto.getName() != null) {
             productToUpdate.setName(productDto.getName());
@@ -186,7 +191,7 @@ public class ProductService {
         ProductEntity productToDelete = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(NOT_FOUND_MSG.formatted(id)));
 
-        tokenValidation(productMapper.toDto(productToDelete), token);
+        tokenValidation(productToDelete.getSeller().getUserId(), token);
 
         productRepository.delete(productToDelete);
 

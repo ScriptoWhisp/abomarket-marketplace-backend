@@ -38,7 +38,6 @@ public class ProductDto {
     private Integer sellerId;
 
     @Schema(description = "Unique identifier of the corresponding category (foreign key).", example = "1")
-    @NotNull
     private Integer categoryId;
 
     @Schema(description = "Date and time when the product was added to the database.", example = "2021-04-01T12:00:00Z")

@@ -2,8 +2,6 @@ package ee.taltech.iti03022024project.controller.login;
 
 import ee.taltech.iti03022024project.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,13 +14,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class LoginControllerIntegrationTest extends AbstractIntegrationTest {
-    private static final Logger log = LoggerFactory.getLogger(LoginControllerIntegrationTest.class);
+class LoginControllerIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void LoginTestSuccessful() throws Exception {
+    void Login_LoginUser_ReturnJwt() throws Exception {
         mockMvc.perform(
                         post("/api/public/login")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -33,7 +30,7 @@ public class LoginControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void LoginTestUserNotExist() throws Exception {
+    void Login_LoginUserWhichDoesNotExist_ReturnStatusUnauthorized() throws Exception {
         mockMvc.perform(
                         post("/api/public/login")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +41,7 @@ public class LoginControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void LoginTestInvalidPassword() throws Exception {
+    void Login_LoginUserWithInvalidPassword_ReturnStatusUnauthorized() throws Exception {
         mockMvc.perform(
                         post("/api/public/login")
                                 .contentType(MediaType.APPLICATION_JSON)

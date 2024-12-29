@@ -42,7 +42,11 @@
         </insert>
 
         <insert tableName="statuses">
-            <column name="status_name" value="orderPlaced"/>
+            <column name="status_name" value="status1"/>
+        </insert>
+
+        <insert tableName="statuses">
+            <column name="status_name" value="status2"/>
         </insert>
 
         <insert tableName="categories">
@@ -54,7 +58,6 @@
         </insert>
 
         <insert tableName="products">
-            <column name="product_id" value="1"/>
             <column name="name" value="product1"/>
             <column name="description" value="productDescription1"/>
             <column name="price" value="100.0"/>
@@ -65,7 +68,6 @@
         </insert>
 
         <insert tableName="products">
-            <column name="product_id" value="2"/>
             <column name="name" value="product2"/>
             <column name="description" value="productDescription2"/>
             <column name="price" value="200.0"/>
@@ -76,7 +78,6 @@
         </insert>
 
         <insert tableName="products">
-            <column name="product_id" value="3"/>
             <column name="name" value="product3"/>
             <column name="description" value="productDescription3"/>
             <column name="price" value="300.0"/>
