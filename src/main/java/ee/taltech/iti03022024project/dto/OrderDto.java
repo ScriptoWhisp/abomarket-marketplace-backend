@@ -3,11 +3,13 @@ package ee.taltech.iti03022024project.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 
 @Schema(name = "Order", description = "DTO for information about order")
 @Data
+@Builder
 @AllArgsConstructor
 public class OrderDto {
 

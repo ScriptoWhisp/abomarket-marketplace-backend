@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,10 +64,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private Authentication buildAuthToken(Claims tokenBody) {
+        List<?> roles = (List<?>) tokenBody.get("roles");
+        List<SimpleGrantedAuthority> authorities = roles.stream()
+                .map(role -> {
+                    if (role instanceof LinkedHashMap) {
+                        return new SimpleGrantedAuthority((String) ((LinkedHashMap<?, ?>) role).get("authority"));
+                    } else if (role instanceof String roleString) {
+                        return new SimpleGrantedAuthority(roleString);
+                    } else {
+                        throw new IllegalArgumentException("Unexpected role format: " + role);
+                    }
+                })
+                .toList();
         return new UsernamePasswordAuthenticationToken(
                 tokenBody.getSubject(),
                 null,
-                List.of(new SimpleGrantedAuthority("USER"))
+                authorities
         );
     }
 }

@@ -1,6 +1,7 @@
 package ee.taltech.iti03022024project.controller;
 
 import ee.taltech.iti03022024project.dto.UserDto;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,11 +27,14 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Get all users", description = "Returns a list of all users recorded in the database.")
-    @ApiResponse(responseCode = "200", description = "List of users returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UserDto.class))))
+    @Operation(summary = "Get all users", description = "Returns a page of users with the specified search, page number and page size.")
+    @ApiResponse(responseCode = "200", description = "List of users returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
-    public List<UserDto> getUsers() {
-        return userService.getUsers();
+    public ResponseEntity<PageResponse<UserDto>> getUsers(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "5") int pageSize) {
+        return ResponseEntity.ok(userService.getUsers(search, pageNo, pageSize));
     }
 
     @Operation(summary = "Get user by id", description = "Returns a user with the specified id (non-negative integer).")
@@ -48,13 +52,23 @@ public class UserController {
         return ResponseEntity.ok(userService.getAuthorizedUser());
     }
 
-    @Operation(summary = "Patch authorized user", description = "Patcher authorized user's information and returns updated info.")
+    @Operation(summary = "Patch authorized user", description = "Patches authorized user's information and returns updated info.")
     @ApiResponse(responseCode = "200", description = "User updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     @PatchMapping("/profile")
     public ResponseEntity<UserDto> patchAuthorizedUser(@Valid @RequestBody UserDto userDto) {
         log.info("Received request to update authorized user with data: {}", userDto);
         UserDto updatedUser = userService.patchAuthorizedUser(userDto);
         log.info("Authorized user updated successfully: {}", updatedUser);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @Operation(summary = "Patch user", description = "Patches user's information and returns updated info, should be only possible to admins.")
+    @ApiResponse(responseCode = "200", description = "User updated successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserDto> patchUserById(@PathVariable int id, @Valid @RequestBody UserDto userDto) {
+        log.info("Received request by admin to update user with data: {}", userDto);
+        UserDto updatedUser = userService.patchUserById(id, userDto);
+        log.info("User updated successfully: {}", updatedUser);
         return ResponseEntity.ok(updatedUser);
     }
 

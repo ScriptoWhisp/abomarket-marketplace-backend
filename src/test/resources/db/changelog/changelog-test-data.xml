@@ -1,0 +1,121 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+
+    <include file="db/changelog/changelog-master.xml"/>
+
+    <changeSet id="2024-12-20 Add data for tests" author="Alexander Smirnov">
+        <insert tableName="users">
+            <column name="first_name" value="userName1"/>
+            <column name="last_name" value="userLastName1"/>
+            <column name="email" value="userEmail1@gmail.com"/>
+            <column name="password" value="$2a$10$w9hT/ZVwLbm1AfzPzDh6mODh57HYUPiYRlECi/EhFHk/k7CZZ8h7q"/>
+            <column name="phone" value="userPhone1"/>
+            <column name="location" value="userLocation1"/>
+            <column name="created_at" value="2024-12-20 00:00:00"/>
+            <column name="role_id" value="1"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="first_name" value="userName2"/>
+            <column name="last_name" value="userLastName2"/>
+            <column name="email" value="userEmail2@gmail.com"/>
+            <column name="password" value="$2a$10$w9hT/ZVwLbm1AfzPzDh6mODh57HYUPiYRlECi/EhFHk/k7CZZ8h7q"/>
+            <column name="phone" value="userPhone2"/>
+            <column name="location" value="userLocation2"/>
+            <column name="created_at" value="2024-12-20 00:00:00"/>
+            <column name="role_id" value="1"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="first_name" value="userName3"/>
+            <column name="last_name" value="userLastName3"/>
+            <column name="email" value="userEmail3@gmail.com"/>
+            <column name="password" value="$2a$10$w9hT/ZVwLbm1AfzPzDh6mODh57HYUPiYRlECi/EhFHk/k7CZZ8h7q"/>
+            <column name="phone" value="userPhone3"/>
+            <column name="location" value="userLocation3"/>
+            <column name="created_at" value="2024-12-20 00:00:00"/>
+            <column name="role_id" value="2"/>
+        </insert>
+
+        <insert tableName="statuses">
+            <column name="status_name" value="status1"/>
+        </insert>
+
+        <insert tableName="statuses">
+            <column name="status_name" value="status2"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="category_name" value="category1"/>
+        </insert>
+
+        <insert tableName="categories">
+            <column name="category_name" value="category2"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="product1"/>
+            <column name="description" value="productDescription1"/>
+            <column name="price" value="100.0"/>
+            <column name="quantity_in_stock" value="1"/>
+            <column name="seller_id" value="1"/>
+            <column name="category_id" value="1"/>
+            <column name="date_added" value="2024-12-20 00:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="product2"/>
+            <column name="description" value="productDescription2"/>
+            <column name="price" value="200.0"/>
+            <column name="quantity_in_stock" value="2"/>
+            <column name="seller_id" value="1"/>
+            <column name="category_id" value="2"/>
+            <column name="date_added" value="2024-12-20 00:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="product3"/>
+            <column name="description" value="productDescription3"/>
+            <column name="price" value="300.0"/>
+            <column name="quantity_in_stock" value="3"/>
+            <column name="seller_id" value="3"/>
+            <column name="category_id" value="1"/>
+            <column name="date_added" value="2024-12-20 00:00:00"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="user_id" value="1"/>
+            <column name="status_id" value="0"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="user_id" value="1"/>
+            <column name="status_id" value="0"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="user_id" value="3"/>
+            <column name="status_id" value="0"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="1"/>
+            <column name="quantity" value="1"/>
+            <column name="price_at_time_of_order" value="100.0"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="order_id" value="2"/>
+            <column name="product_id" value="2"/>
+            <column name="quantity" value="2"/>
+            <column name="price_at_time_of_order" value="200.0"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

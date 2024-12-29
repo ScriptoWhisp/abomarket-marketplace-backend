@@ -1,6 +1,8 @@
 package ee.taltech.iti03022024project.controller;
 
+import ee.taltech.iti03022024project.criteria.OrderItemSearchCriteria;
 import ee.taltech.iti03022024project.dto.OrderItemDto;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import ee.taltech.iti03022024project.service.OrderItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -27,10 +29,14 @@ public class OrderItemController {
     private final OrderItemService orderItemService;
 
     @Operation(summary = "Get all order items", description = "Returns a list of all order items recorded in the database.")
-    @ApiResponse(responseCode = "200", description = "List of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderItemDto.class))))
+    @ApiResponse(responseCode = "200", description = "List of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
-    public List<OrderItemDto> getOrderItems() {
-        return orderItemService.getOrderItems();
+    public ResponseEntity<PageResponse<OrderItemDto>> getOrderItems(
+            @Valid @ModelAttribute OrderItemSearchCriteria criteria,
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "5") int pageSize
+    ) {
+        return ResponseEntity.ok(orderItemService.getOrderItems(criteria, pageNo, pageSize));
     }
 
     @Operation(summary = "Get order item by id", description = "Returns an order item with the specified id (non-negative integer).")

@@ -32,20 +32,25 @@ public class UserEntity implements UserDetails {
     private String location;
 
     @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    @SuppressWarnings("java:S1948")
+    private RoleEntity role;
+
+    @ManyToOne
     @JoinColumn(name = "unfinished_order", referencedColumnName = "order_id")
-    private transient OrderEntity unfinishedOrder;
+    @SuppressWarnings("java:S1948")
+    private OrderEntity unfinishedOrder;
 
     @CreationTimestamp
     private Instant createdAt;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return email;
     }
 }

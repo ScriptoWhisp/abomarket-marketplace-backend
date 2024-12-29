@@ -1,11 +1,9 @@
 package ee.taltech.iti03022024project.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -13,6 +11,7 @@ import java.time.Instant;
 
 @Schema(name = "Product", description = "DTO for information about product")
 @Data
+@Builder
 @AllArgsConstructor
 @Validated
 public class ProductDto {
@@ -33,7 +32,7 @@ public class ProductDto {
     private Double price;
 
     @Schema(description = "Quantity of the product in stock.", example = "10")
-    @Positive
+    @PositiveOrZero
     private Integer stockQuantity;
 
     @Schema(description = "Unique identifier of the corresponding seller (foreign key).", example = "1")
@@ -41,7 +40,6 @@ public class ProductDto {
     private Integer sellerId;
 
     @Schema(description = "Unique identifier of the corresponding category (foreign key).", example = "1")
-    @NotNull
     private Integer categoryId;
 
     @Schema(description = "Date and time when the product was added to the database.", example = "2021-04-01T12:00:00Z")

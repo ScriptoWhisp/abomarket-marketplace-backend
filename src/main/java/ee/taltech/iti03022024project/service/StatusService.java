@@ -6,9 +6,12 @@ import ee.taltech.iti03022024project.dto.StatusDto;
 import ee.taltech.iti03022024project.exception.ResourceNotFoundException;
 import ee.taltech.iti03022024project.mapstruct.StatusMapper;
 import ee.taltech.iti03022024project.repository.StatusRepository;
+import ee.taltech.iti03022024project.responses.PageResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +28,10 @@ public class StatusService {
     private static final String NOT_FOUND_MSG = "Status with id %s not found";
 
 
-    public List<StatusDto> getStatuses() {
-        return statusRepository.findAll().stream().map(statusMapper::toDto).toList();
+    public PageResponse<StatusDto> getStatuses(String search, int pageNo, int pageSize) {
+        log.info("Attempting to get statuses with search: {}, page number: {}, page size: {}", search, pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return new PageResponse<>(statusRepository.findAllByStatusNameContaining(search, pageable).map(statusMapper::toDto));
     }
 
     public StatusDto getStatusById(int id) {

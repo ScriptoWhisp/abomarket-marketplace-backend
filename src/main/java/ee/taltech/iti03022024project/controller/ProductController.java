@@ -86,7 +86,7 @@ public class ProductController {
         log.info("Received request to delete product with id {}", id);
         productService.deleteProduct(id, token);
         log.info("Product deleted successfully: {}", id);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 
 }
