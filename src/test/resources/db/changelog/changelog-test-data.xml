@@ -102,6 +102,20 @@
             <column name="status_id" value="0"/>
         </insert>
 
+        <insert tableName="order_items">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="1"/>
+            <column name="quantity" value="1"/>
+            <column name="price_at_time_of_order" value="100.0"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="order_id" value="2"/>
+            <column name="product_id" value="2"/>
+            <column name="quantity" value="2"/>
+            <column name="price_at_time_of_order" value="200.0"/>
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>
