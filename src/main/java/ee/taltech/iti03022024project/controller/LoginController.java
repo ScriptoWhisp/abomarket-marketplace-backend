@@ -1,7 +1,7 @@
 package ee.taltech.iti03022024project.controller;
 
-import ee.taltech.iti03022024project.security.LoginResponseDto;
 import ee.taltech.iti03022024project.security.LoginRequestDto;
+import ee.taltech.iti03022024project.security.LoginResponseDto;
 import ee.taltech.iti03022024project.service.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,8 +1,8 @@
 package ee.taltech.iti03022024project.mapstruct;
 
-import ee.taltech.iti03022024project.dto.UserDto;
 import ee.taltech.iti03022024project.domain.OrderEntity;
 import ee.taltech.iti03022024project.domain.UserEntity;
+import ee.taltech.iti03022024project.dto.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

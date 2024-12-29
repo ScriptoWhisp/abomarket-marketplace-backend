@@ -1,6 +1,5 @@
 package ee.taltech.iti03022024project.security;
 
-import ee.taltech.iti03022024project.exception.BadTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;

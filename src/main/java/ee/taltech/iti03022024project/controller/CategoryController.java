@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
@@ -46,13 +47,14 @@ public class CategoryController {
     }
 
     @Operation(summary = "Create category", description = "Creates a new category and returns it.")
-    @ApiResponse(responseCode = "200", description = "Category created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryDto.class)))
+    @ApiResponse(responseCode = "201", description = "Category created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryDto.class)))
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         log.info("Received request to create category: {}", categoryDto);
         CategoryDto createdCategory = categoryService.createCategory(categoryDto);
         log.info("Category created successfully: {}", createdCategory);
-        return ResponseEntity.ok(createdCategory);
+        int id = createdCategory.getId();
+        return ResponseEntity.created(URI.create(String.format("/api/categories/%s", id))).body(createdCategory);
     }
 
     @Operation(summary = "Update category", description = "Updates category with the specified id and returns it.")

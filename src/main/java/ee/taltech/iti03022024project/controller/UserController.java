@@ -13,16 +13,9 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
@@ -81,13 +74,15 @@ public class UserController {
 
 
     @Operation(summary = "Create user", description = "Creates a new user with the given information.")
-    @ApiResponse(responseCode = "200", description = "User created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
+    @ApiResponse(responseCode = "201", description = "User created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class)))
     @PostMapping
+
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         log.info("Received request to create user: {}", userDto);
         UserDto createdUser = userService.createUser(userDto);
         log.info("User created successfully: {}", createdUser);
-        return ResponseEntity.ok(createdUser);
+        int userId = createdUser.getId();
+        return ResponseEntity.created(URI.create(String.format("/api/users/%s", userId))).body(createdUser);
     }
 
     @Operation(summary = "Delete user", description = "Deletes a user with the specified id (non-negative integer).")

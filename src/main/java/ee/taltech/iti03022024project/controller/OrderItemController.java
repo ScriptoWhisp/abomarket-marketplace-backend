@@ -16,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.util.List;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -45,13 +48,14 @@ public class OrderItemController {
     }
 
     @Operation(summary = "Create order item", description = "Creates a new order item and returns it.")
-    @ApiResponse(responseCode = "200", description = "Order item created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDto.class)))
+    @ApiResponse(responseCode = "201", description = "Order item created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemDto.class)))
     @PostMapping
     public ResponseEntity<OrderItemDto> createOrderItem(@Valid @RequestBody OrderItemDto orderItemDto) {
         log.info("Received request to create order: {}", orderItemDto);
         OrderItemDto createdOrderItem = orderItemService.createOrderItem(orderItemDto);
         log.info("OrderItem created successfully: {}", createdOrderItem);
-        return ResponseEntity.ok(createdOrderItem);
+        int id = createdOrderItem.getId();
+        return ResponseEntity.created(URI.create(String.format("/api/order_items/%s", id))).body(createdOrderItem);
     }
 
     // No need to implement updateOrderItem method for now

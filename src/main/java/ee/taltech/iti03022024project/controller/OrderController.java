@@ -16,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.util.List;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -45,13 +48,14 @@ public class OrderController {
     }
 
     @Operation(summary = "Create order", description = "Creates a new order and returns it.")
-    @ApiResponse(responseCode = "200", description = "Order created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)))
+    @ApiResponse(responseCode = "201", description = "Order created successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)))
     @PostMapping
     public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody OrderDto orderDto) {
         log.info("Received request to create order: {}", orderDto);
         OrderDto createdOrder = orderService.createOrder(orderDto);
         log.info("Order created successfully: {}", createdOrder);
-        return ResponseEntity.ok(createdOrder);
+        int id = createdOrder.getId();
+        return ResponseEntity.created(URI.create(String.format("/api/orders/%s", id))).body(createdOrder);
     }
 
     @Operation(summary = "Update order", description = "Updates order with the specified id and returns it.")
