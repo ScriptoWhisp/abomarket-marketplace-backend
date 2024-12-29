@@ -198,7 +198,7 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newUserJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(4))
                 .andExpect(jsonPath("$.firstName").value("userName4"))
                 .andExpect(jsonPath("$.lastName").exists())

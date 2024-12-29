@@ -95,7 +95,7 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"productName\",\"description\":\"productDescription\",\"stockQuantity\":1,\"price\":1.0,\"sellerId\":1,\"categoryId\":2}")
                         .header("Authorization", "Bearer " + jwtToken))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("productName"))
                 .andExpect(jsonPath("$.description").value("productDescription"))
                 .andExpect(jsonPath("$.stockQuantity").value(1))

@@ -70,7 +70,7 @@ class OrderItemControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"orderId\":1,\"productId\":2,\"quantity\":3,\"priceAtTimeOfOrder\":20.0}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(3))
                 .andExpect(jsonPath("$.orderId").value(1))
                 .andExpect(jsonPath("$.productId").value(2))

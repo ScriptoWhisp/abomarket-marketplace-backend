@@ -84,7 +84,7 @@ class CategoryControllerIntegrationTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + adminJwtToken)
                         .content(validCategoryJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("New Category"));
     }
@@ -118,7 +118,7 @@ class CategoryControllerIntegrationTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + adminJwtToken)
                         .content(validCategoryJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(not(1000)))
                 .andExpect(jsonPath("$.name").value("New Category"));
     }

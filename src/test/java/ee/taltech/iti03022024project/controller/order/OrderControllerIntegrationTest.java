@@ -89,7 +89,7 @@ class OrderControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1,\"statusId\":1}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(4));
     }
 
