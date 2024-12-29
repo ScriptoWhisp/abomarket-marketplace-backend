@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Schema(name = "User", description = "DTO for information about user")
 @Data
+@Builder
 @AllArgsConstructor
 public class UserDto {
 

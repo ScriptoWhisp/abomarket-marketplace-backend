@@ -83,6 +83,8 @@ public class OrderService {
             OrderEntity savedOrder = orderRepository.save(newOrder);
             log.info("Order created successfully: {}", savedOrder);
             return orderMapper.toDto(savedOrder);
+        } catch (ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new ObjectCreationException("Failed to create order: " + e.getMessage());
         }

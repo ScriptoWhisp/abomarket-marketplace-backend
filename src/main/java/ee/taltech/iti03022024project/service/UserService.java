@@ -30,6 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
+    public static final String USER_WITH_ID = "User with id ";
+    public static final String NOT_FOUND = " not found";
     private final UsersRepository usersRepository;
     private final RolesRepository rolesRepository;
     private final UserMapper userMapper;
@@ -48,14 +50,14 @@ public class UserService {
 
     public UserDto getUserById(int id) {
         return usersRepository.findById(id).map(userMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_WITH_ID + id + NOT_FOUND));
     }
 
     public UserDto getAuthorizedUser() {
-        if (authenticationFacade.getAuthenticatedUser() == null)
+        UserEntity userEntity = authenticationFacade.getAuthenticatedUser();
+        if (userEntity == null)
             throw new BadTokenException("User not authorized");
         else {
-            UserEntity userEntity = authenticationFacade.getAuthenticatedUser();
             return userMapper.toDto(userEntity);
         }
     }
@@ -73,7 +75,7 @@ public class UserService {
 
     public UserDto patchUserById(int id, UserDto userDto) {
         UserEntity userToUpdate = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_WITH_ID + id + NOT_FOUND));
         return updateUser(userToUpdate, userDto);
     }
 
@@ -120,7 +122,7 @@ public class UserService {
     public void deleteUser(int id) {
         log.info("Attempting to delete user with id {}", id);
         UserEntity userToDelete = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_WITH_ID + id + NOT_FOUND));
         usersRepository.delete(userToDelete);
         log.info("User deleted successfully: {}", userToDelete);
     }

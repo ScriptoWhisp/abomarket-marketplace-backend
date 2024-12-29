@@ -3,6 +3,7 @@ package ee.taltech.iti03022024project.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -10,6 +11,7 @@ import java.time.Instant;
 
 @Schema(name = "Product", description = "DTO for information about product")
 @Data
+@Builder
 @AllArgsConstructor
 @Validated
 public class ProductDto {
