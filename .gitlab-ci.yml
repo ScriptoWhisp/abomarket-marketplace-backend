@@ -9,25 +9,22 @@ variables:
 
 build:
   stage: build
-  image: gradle:8.2.1-jdk-alpine
+  image: gradle:jdk21
   services:
     - docker:dind
+  privileged: true
   variables:
     DOCKER_HOST: "tcp://docker:2375"
     DOCKER_TLS_CERTDIR: ""
   before_script:
-    - wget -O /etc/apk/keys/adoptium.rsa.pub https://packages.adoptium.net/artifactory/api/security/keypair/public/repositories/apk
-    - echo 'https://packages.adoptium.net/artifactory/apk/alpine/main' >> /etc/apk/repositories
-    - apk add --no-cache temurin-21-jdk
-    - java -version
+    - apt-get update && apt-get install -y docker.io
+    - docker --version
   script:
     - chmod +x ./gradlew
-    - ./gradlew clean build
-  artifacts:
-    paths:
-      - build/libs/*.jar
+    - ./gradlew clean test
   only:
     - main
+
 
 dockerize:
   stage: dockerize
