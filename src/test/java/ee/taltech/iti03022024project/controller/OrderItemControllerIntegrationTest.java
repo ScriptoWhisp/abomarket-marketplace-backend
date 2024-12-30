@@ -1,4 +1,4 @@
-package ee.taltech.iti03022024project.controller.orderItem;
+package ee.taltech.iti03022024project.controller;
 
 import ee.taltech.iti03022024project.AbstractIntegrationTest;
 import jakarta.transaction.Transactional;

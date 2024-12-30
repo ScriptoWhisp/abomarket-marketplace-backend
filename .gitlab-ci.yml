@@ -12,7 +12,7 @@ build:
   image: gradle:jdk21
   script:
     - chmod +x ./gradlew
-    - ./gradlew clean build -x test
+    - ./gradlew clean build
   artifacts:
     paths:
       - build/libs/*.jar
