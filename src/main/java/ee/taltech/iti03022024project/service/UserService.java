@@ -87,6 +87,7 @@ public class UserService {
         userToUpdate.setPassword(userDto.getPassword() != null ? userDto.getPassword() : userToUpdate.getPassword());
         userToUpdate.setPhone(userDto.getPhone() != null ? userDto.getPhone() : userToUpdate.getPhone());
         userToUpdate.setLocation(userDto.getLocation() != null ? userDto.getLocation() : userToUpdate.getLocation());
+        userToUpdate.setUnfinishedOrder(userDto.getUnfinishedOrderId() != null ? userMapper.mapUnfinishedOrderIdToOrderEntity(userDto.getUnfinishedOrderId()) : userToUpdate.getUnfinishedOrder());
         usersRepository.save(userToUpdate);
         log.info("User updated successfully: {}", userToUpdate);
         return userMapper.toDto(userToUpdate);

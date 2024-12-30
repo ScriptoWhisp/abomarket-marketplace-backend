@@ -218,4 +218,29 @@
         />
     </changeSet>
 
+    <changeSet id="2024-12-30 add admin account" author="Viktor Dovbnia">
+        <insert tableName="users">
+            <column name="user_id">1000000000</column>
+            <column name="first_name">Admin</column>
+            <column name="last_name">Admin</column>
+            <column name="email">admin3@admin.com</column>
+            <column name="password">$2a$12$7/oSSfP6uAHjcqldjbFlF.uTIzFWHj.tstWhRLy8TGtHFBqfjDB.K</column> <!-- admin -->
+            <column name="phone">+380000000000</column>
+            <column name="location">Admin</column>
+            <column name="created_at">2024-12-30 00:00:00</column>
+            <column name="role_id">2</column>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="user_id">1000000000</column>
+            <column name="status_id">0</column>
+            <column name="order_id">1000000000</column>
+        </insert>
+
+        <update tableName="users">
+            <column name="unfinished_order">1000000000</column>
+            <where>user_id = 1000000000</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
