@@ -13,9 +13,11 @@ build:
   script:
     - chmod +x ./gradlew
     - ./gradlew clean build
+  artifacts:
+    paths:
+      - build/libs/*.jar
   only:
     - main
-
 
 dockerize:
   stage: dockerize
