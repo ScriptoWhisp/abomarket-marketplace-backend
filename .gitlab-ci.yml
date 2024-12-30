@@ -10,18 +10,9 @@ variables:
 build:
   stage: build
   image: gradle:jdk21
-  services:
-    - docker:dind
-  privileged: true
-  variables:
-    DOCKER_HOST: "tcp://docker:2375"
-    DOCKER_TLS_CERTDIR: ""
-  before_script:
-    - apt-get update && apt-get install -y docker.io
-    - docker --version
   script:
     - chmod +x ./gradlew
-    - ./gradlew clean test
+    - ./gradlew clean build
   only:
     - main
 

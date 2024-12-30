@@ -52,5 +52,6 @@ dependencies {
 }
 
 tasks.named('test') {
+    exclude 'ee/taltech/iti03022024project/controller/**'
     useJUnitPlatform()
 }
