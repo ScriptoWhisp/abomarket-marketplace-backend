@@ -53,7 +53,7 @@ class UserControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content.length()").value(3));
+                .andExpect(jsonPath("$.content.length()").value(4));
     }
 
     @Test
