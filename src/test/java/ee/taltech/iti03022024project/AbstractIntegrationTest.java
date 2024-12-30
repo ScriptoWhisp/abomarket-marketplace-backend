@@ -9,7 +9,7 @@ public class AbstractIntegrationTest {
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER;
 
     static {
-        POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:14.1");
+        POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres");
         POSTGRESQL_CONTAINER.start();
     }
 
