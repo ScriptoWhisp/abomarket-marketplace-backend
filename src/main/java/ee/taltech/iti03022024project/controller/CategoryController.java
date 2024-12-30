@@ -27,8 +27,8 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @Operation(summary = "Get all categories", description = "Returns a list of all categories recorded in the database.")
-    @ApiResponse(responseCode = "200", description = "List of categories returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
+    @Operation(summary = "Get all categories", description = "Returns a list of all categories recorded in the database. Supports filtration and pagination.")
+    @ApiResponse(responseCode = "200", description = "Page of categories returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
     public ResponseEntity<PageResponse<CategoryDto>> getCategories(
             @RequestParam(defaultValue = "") String search,

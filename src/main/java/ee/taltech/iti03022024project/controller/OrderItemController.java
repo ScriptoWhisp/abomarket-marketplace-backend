@@ -28,8 +28,8 @@ public class OrderItemController {
 
     private final OrderItemService orderItemService;
 
-    @Operation(summary = "Get all order items", description = "Returns a list of all order items recorded in the database.")
-    @ApiResponse(responseCode = "200", description = "List of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
+    @Operation(summary = "Get all order items", description = "Returns a list of all order items recorded in the database. Supports filtration and pagination.")
+    @ApiResponse(responseCode = "200", description = "Page of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
     public ResponseEntity<PageResponse<OrderItemDto>> getOrderItems(
             @Valid @ModelAttribute OrderItemSearchCriteria criteria,

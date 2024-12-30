@@ -27,7 +27,7 @@ public class StatusController {
 
 
     @Operation(summary = "Get all statuses", description = "Returns a page of statuses with the specified search, page number and page size.")
-    @ApiResponse(responseCode = "200", description = "List of statuses returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
+    @ApiResponse(responseCode = "200", description = "Page of statuses returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
     public ResponseEntity<PageResponse<StatusDto>> getStatuses(
             @RequestParam(defaultValue = "") String search,

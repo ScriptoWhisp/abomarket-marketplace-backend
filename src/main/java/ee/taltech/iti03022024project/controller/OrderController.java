@@ -29,7 +29,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @Operation(summary = "Get all orders", description = "Returns a page of orders with the specified criteria, page number and page size.")
-    @ApiResponse(responseCode = "200", description = "List of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
+    @ApiResponse(responseCode = "200", description = "Page of order items returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
     public ResponseEntity<PageResponse<OrderDto>> getOrders(
             @Valid @ModelAttribute OrderSearchCriteria criteria,

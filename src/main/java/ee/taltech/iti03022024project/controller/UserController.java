@@ -28,7 +28,7 @@ public class UserController {
     private final UserService userService;
 
     @Operation(summary = "Get all users", description = "Returns a page of users with the specified search, page number and page size.")
-    @ApiResponse(responseCode = "200", description = "List of users returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
+    @ApiResponse(responseCode = "200", description = "Page of users returned successfully.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PageResponse.class))))
     @GetMapping
     public ResponseEntity<PageResponse<UserDto>> getUsers(
             @RequestParam(defaultValue = "") String search,

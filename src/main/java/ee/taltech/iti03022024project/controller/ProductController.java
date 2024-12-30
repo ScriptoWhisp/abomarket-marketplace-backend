@@ -45,7 +45,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Get products by user id", description = "Returns a page with list of some products recorded in the database (depending on pagination parameters) by user id.")
-    @ApiResponse(responseCode = "200", description = "List of products returned successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageResponse.class)))
+    @ApiResponse(responseCode = "200", description = "Page of products returned successfully.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageResponse.class)))
     @ApiResponse(responseCode = "500", description = "User not found.", content = @Content())
     @GetMapping("/user/{id}")
     public ResponseEntity<PageResponse<ProductDto>> getProductsByUserId(@PathVariable int id,
