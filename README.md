@@ -4,7 +4,7 @@
 
 An online marketplace web application where users can buy and sell products through fixed-price listings. Sellers can register to create product listings with descriptions, images, prices, and categories. Buyers can browse these listings, add items to a shopping cart, and make immediate purchases. The platform will support user authentication, product management and order processing.
 
-This is the backend part of the project. To start the whole application first read instructions, setup and start the frontend part [iti0302-2024-frontend](https://gitlab.cs.ttu.ee/datjul/iti0302-2024-frontend)
+This is the backend part of the project. To start the whole application first read instructions, setup and start the [frontend part](https://github.com/ScriptoWhisp/abomarket-marketplace-frontend)
 
 #### Key Features
 
